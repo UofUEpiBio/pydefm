@@ -1,6 +1,13 @@
 from __future__ import annotations
 
 import scikit_build_example as m
+import numpy as np
+
+y = np.array([1, 2, 3])
+x = np.array([1, 2, 3])
+id = np.array([1, 2, 3])
+
+m.new_defm(y, x, id)
 
 
 def test_version():
