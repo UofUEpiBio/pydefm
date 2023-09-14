@@ -1,15 +1,15 @@
 [build-system]
-requires = ["scikit-build-core>=0.3.3", "pybind11"]
+requires = ["scikit-build-core>=0.3.3", "pybind11", "numpy"]
 build-backend = "scikit_build_core.build"
 
 
 [project]
-name = "scikit_build_example"
+name = "pydefm"
 version = "0.0.1"
-description="A minimal example package (with pybind11)"
+description="Python bindings for defm"
 readme = "README.md"
 authors = [
-  { name = "My Name", email = "me@email.com" },
+  { name = "George G. Vega Yon", email = "g.vegayon@gmail.com" },
 ]
 requires-python = ">=3.7"
 classifiers = [
