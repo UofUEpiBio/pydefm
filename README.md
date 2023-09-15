@@ -14,7 +14,9 @@ rocks!).
 
 The `defm` module is already
 <a href="https://github.com/UofUEpiBio/defm" target="_blank">implemented
-in R</a>
+in R</a> and it can be used to count motifs and build Markov Random
+fields and other models like ERGMs. More information in [this
+preprint](https://arxiv.org/abs/2211.00627).
 
 ## Installation
 
@@ -44,7 +46,7 @@ obj = m.new_defm(id, y, x)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7feeb40b2c70>
+    <pydefm._core.DEFM at 0x7feeb40c6b70>
 
 ``` python
 # We can export member functions from the C++ class. Here is

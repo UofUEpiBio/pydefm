@@ -19,7 +19,9 @@ discrete exponential family models. This is possible using the
 [`pybind11`]: https://pybind11.readthedocs.io/en/stable/
 
 The `defm` module is already
-[implemented in R](https://github.com/UofUEpiBio/defm){target="_blank"}
+[implemented in R](https://github.com/UofUEpiBio/defm){target="_blank"} and it
+can be used to count motifs and build Markov Random fields and other models like
+ERGMs. More information in [this preprint](https://arxiv.org/abs/2211.00627).
 
 
 [barry-git]: https://github.com/USCbiostats/barry
