@@ -1,46 +1,36 @@
 # pydefm: Python bindings for defm
 
+| CI           | status                                                                                                                                                         |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| conda.recipe | [![Conda Actions Status](https://github.com/UofUEpiBio/pydefm/workflows/Conda/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AConda) |
+| pip builds   | [![Pip Actions Status](https://github.com/UofUEpiBio/pydefm/workflows/Pip/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3APip)       |
 
-|      CI              | status |
-|----------------------|--------|
-| conda.recipe         | [![Conda Actions Status][actions-conda-badge]][actions-conda-link] |
-| pip builds           | [![Pip Actions Status][actions-pip-badge]][actions-pip-link] |
+This is a python wrapper of the [`barry c++`
+library](https://github.com/USCbiostats/barry), and in particular, of
+the `defm` module that provides utilities for fitting discrete
+exponential family models. This is possible using the
+[`pybind11`](https://pybind11.readthedocs.io/en/stable/) library (which
+rocks!).
 
-This is a python wrapper of the [`barry c++` library][barry-git], and in
-particular, of the `defm` module that provides utilities for fitting
-discrete exponential family models.
-
-
-[barry-git]: https://github.com/USCbiostats/barry
-[gitter-badge]:            https://badges.gitter.im/pybind/Lobby.svg
-[gitter-link]:             https://gitter.im/pybind/Lobby
-[actions-badge]:           https://github.com/UofUEpiBio/pydefm/workflows/Tests/badge.svg
-[actions-conda-link]:      https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AConda
-[actions-conda-badge]:     https://github.com/UofUEpiBio/pydefm/workflows/Conda/badge.svg
-[actions-pip-link]:        https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3APip
-[actions-pip-badge]:       https://github.com/UofUEpiBio/pydefm/workflows/Pip/badge.svg
-[actions-wheels-link]:     https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AWheels
-[actions-wheels-badge]:    https://github.com/UofUEpiBio/pydefm/workflows/Wheels/badge.svg
+The `defm` module is already
+<a href="https://github.com/UofUEpiBio/defm" target="_blank">implemented
+in R</a>
 
 ## Installation
-
 
 - clone this repository
 - `pip install ./pydefm`
 
-
 ## CI Examples
 
+There are examples for CI in `.github/workflows`. A simple way to
+produces binary “wheels” for all platforms is illustrated in the
+“wheels.yml” file, using
+[`cibuildwheel`](https://cibuildwheel.readthedocs.io).
 
-There are examples for CI in `.github/workflows`. A simple way to produces
-binary "wheels" for all platforms is illustrated in the "wheels.yml" file,
-using [`cibuildwheel`][].
+## Test call
 
-
-Test call
----------
-
-```python
+``` python
 import pydefm as m
 import numpy as np
 
@@ -50,10 +40,35 @@ id = np.array([11, 2, 3])
 
 obj = m.new_defm(id, y, x)
 
-obj.print()
+# Printing the object on screen shows it is a pointer
+obj
+```
 
-# Just testing whether the function works
+    <pydefm._core.DEFM at 0x7feeb40b2c70>
+
+``` python
+# We can export member functions from the C++ class. Here is
+# an example of a function defined in the C++ class:
+obj.print()
+```
+
+Currently, the C++ code uses `printf` to print to the screen, which is a
+different buffer from Python (the problem will be solved using <a
+href="https://pybind11.readthedocs.io/en/stable/advanced/pycpp/utilities.html?highlight=print#using-python-s-print-function-in-c"
+target="_blank">this</a>).
+
+``` python
+# Checking if the data is recovered
 m.print_y(obj)
 ```
 
-[`cibuildwheel`]:          https://cibuildwheel.readthedocs.io
+    Num. of Arrays       : 0
+    Support size         : 0
+    Support size range   : [2147483647, 0]
+    Transform. Fun.      : no
+    Model terms (0)    :
+    Model Y variables (3):
+      0) y0
+      1) y1
+      2) y2
+    0 10 3 
