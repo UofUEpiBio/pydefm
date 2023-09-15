@@ -24,14 +24,19 @@ std::shared_ptr< defm::DEFM > new_defm(
     // std::vector<int> y = {1, 2, 3, 4, 5};
     // std::vector<double> x = {1.0, 2.0, 3.0, 4.0, 5.0};
 
+    // Accessing the data buffer
+    auto id_buff = id.request();
+    auto y_buff = y.request();
+    auto x_buff = x.request();
+
     int n_id = id.size();
     int n_y = y.size();
     int n_x = x.size();
 
     std::shared_ptr< defm::DEFM > object(new defm::DEFM(
-        id.mutable_data(0u),
-        y.mutable_data(0u),
-        x.mutable_data(0u),
+        static_cast< int * >(id_buff.ptr),
+        static_cast< int * >(y_buff.ptr),
+        static_cast< double * >(x_buff.ptr),
         static_cast< size_t >(n_id),
         static_cast< size_t >(n_y),
         static_cast< size_t >(n_x),
@@ -42,8 +47,20 @@ std::shared_ptr< defm::DEFM > new_defm(
     return object;
 }
 
+/**
+ * @brief Print the y vector
+ * @param object The DEFM object
+*/
+void print_y(const std::shared_ptr< defm::DEFM > & object) {
+    
+    auto Y = object->get_Y();
+    for (size_t i = 0u; i < object->get_n_y(); ++i)
+        std::cout << (*(Y + i)) << " ";
 
+    std::cout << std::endl;
 
+    return;
+}
 
 PYBIND11_MODULE(_core, m) {
     m.doc() = R"pbdoc(
@@ -87,6 +104,12 @@ PYBIND11_MODULE(_core, m) {
 
         Some other explanation about the new_defm function.
     )pbdoc");
+
+    m.def("print_y", &print_y, R"pbdoc(
+        Print the y vector
+
+        Some other explanation about the print_y function.")
+        )pbdoc");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

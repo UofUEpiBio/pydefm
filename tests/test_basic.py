@@ -3,11 +3,16 @@ from __future__ import annotations
 import scikit_build_example as m
 import numpy as np
 
-y = np.array([1, 2, 3])
-x = np.array([1, 2, 3])
-id = np.array([1, 2, 3])
+y = np.array([0, 10, 3])
+x = np.array([1, 2.0, 3.4])
+id = np.array([11, 2, 3])
 
-m.new_defm(y, x, id)
+obj = m.new_defm(id, y, x)
+
+obj.print()
+
+# Just testing whether the function works
+m.print_y(obj)
 
 
 def test_version():
@@ -20,3 +25,5 @@ def test_add():
 
 def test_sub():
     assert m.subtract(1, 2) == -1
+
+print("Everything passed")
