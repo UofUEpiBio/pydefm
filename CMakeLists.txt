@@ -15,4 +15,4 @@ python_add_library(_core MODULE src/main.cpp WITH_SOABI)
 target_link_libraries(_core PRIVATE pybind11::headers)
 target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
-install(TARGETS _core DESTINATION scikit_build_example)
+install(TARGETS _core DESTINATION pydefm)

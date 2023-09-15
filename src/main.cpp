@@ -15,8 +15,12 @@ int add(int i, int j) {
 
 
 std::shared_ptr< defm::DEFM > new_defm(
-    py::array_t< int > id,
-    py::array_t< int > y,
+    py::array_t< int > id, 
+    /*
+    python uses row-major. defm uses col-major. Need to address this with:
+    https://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html?highlight=mutable_data#arrays
+    */
+    py::array_t< int > y, 
     py::array_t< double > x
     ) {
 
@@ -67,7 +71,7 @@ PYBIND11_MODULE(_core, m) {
         Pybind11 example plugin
         -----------------------
 
-        .. currentmodule:: scikit_build_example
+        .. currentmodule:: pydefm
 
         .. autosummary::
            :toctree: _generate

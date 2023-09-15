@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import scikit_build_example as m
+import pydefm as m
 import numpy as np
 
 y = np.array([0, 10, 3])
