@@ -36,23 +36,56 @@ produces binary “wheels” for all platforms is illustrated in the
 import pydefm as m
 import numpy as np
 
-y = np.array([0, 10, 3])
-x = np.array([1, 2.0, 3.4])
-id = np.array([11, 2, 3])
+y = np.column_stack(
+  (np.array([0, 0, 1, 1, 1, 1]),
+  np.array([0, 1, 1, 0, 0, 1]))
+)
 
-obj = m.new_defm(id, y, x)
+x = np.array([1, 2.0, 3.4, 3, 1, 2])
+id = np.array([1, 1, 1, 2, 2, 2])
+
+obj = m.new_defm(id, y, x, column_major = False)
 
 # Printing the object on screen shows it is a pointer
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7feeb40c6b70>
+    <pydefm._core.DEFM at 0x7fb88ff22070>
+
+Adding terms via formula
 
 ``` python
-# We can export member functions from the C++ class. Here is
-# an example of a function defined in the C++ class:
+m.term_formula(obj, "{y0}")
+m.term_formula(obj, "{y1}")
+m.term_formula(obj, "{0y0, y1}")
+obj.init()
 obj.print()
 ```
+
+``` python
+counts = m.get_stats(obj)
+counts
+```
+
+    array([[0., 0., 0.],
+           [0., 1., 1.],
+           [1., 1., 0.],
+           [1., 0., 0.],
+           [1., 0., 0.],
+           [1., 1., 0.]])
+
+Notice the first two columns coincide with the `y` array:
+
+``` python
+y
+```
+
+    array([[0, 0],
+           [0, 1],
+           [1, 1],
+           [1, 0],
+           [1, 0],
+           [1, 1]])
 
 Currently, the C++ code uses `printf` to print to the screen, which is a
 different buffer from Python (the problem will be solved using <a
@@ -64,13 +97,17 @@ target="_blank">this</a>).
 m.print_y(obj)
 ```
 
-    Num. of Arrays       : 0
-    Support size         : 0
-    Support size range   : [2147483647, 0]
+    Num. of Arrays       : 6
+    Support size         : 6
+    Support size range   : [4, 4]
     Transform. Fun.      : no
-    Model terms (0)    :
-    Model Y variables (3):
+    Model terms (3)    :
+     - Motif {y0⁺}
+     - Motif {y1⁺}
+     - Motif {y0⁻, y1⁺}
+    Model rules (1)     :
+     - Markov model of order 0
+    Model Y variables (2):
       0) y0
       1) y1
-      2) y2
-    0 10 3 
+    0 0 

@@ -35,25 +35,44 @@ namespace py = pybind11;
 py::array_t<double> get_stats(std::shared_ptr< defm::DEFM > m)
 {
    
-    auto model = m->get_model();
-
     // Getting sizes
-    size_t nrows = ptr->get_n_rows();
-    size_t ncols = model.nterms();
-    size_t m_ord = ptr->get_m_order();
+    size_t nrows = m->get_n_rows();
+    size_t ncols = m->nterms();
+    size_t m_ord = m->get_m_order();
 
-    const int * ID = ptr->get_ID();
+    const int * ID = m->get_ID();
 
     py::array_t< double > res({nrows, ncols});
-    auto target = model.get_stats_target();
 
+    auto res_buff = res.request();
+    double * res_ptr = static_cast< double * >(res_buff.ptr);
 
+    auto target = m->get_stats_target();
+
+    std::function<size_t(size_t,size_t,size_t,size_t)> element_access;
+
+    if (m->get_column_major())
+    {
+
+        element_access = [](size_t i, size_t j, size_t nrow, size_t) -> size_t {
+            return i + j * nrow;
+        };
+
+    } else {
+
+        element_access = [](size_t i, size_t j, size_t, size_t ncol) -> size_t {
+            return j + i * ncol;
+        };
+
+    }
+
+    
     size_t i_effective = 0u;
     size_t n_obs_i = 0u;
     for (size_t i = 0u; i < nrows; ++i)
     {
 
-      // Do we need to reset the counter?
+        // Do we need to reset the counter?
         if ((i > 0) && (*(ID + i - 1u) != *(ID + i)))
             n_obs_i = 0u;
 
@@ -62,12 +81,17 @@ py::array_t<double> get_stats(std::shared_ptr< defm::DEFM > m)
         {
             // std::fill(res.row(i).begin(), res.row(i).end(), -99.0);
             for (size_t j = 0u; j < ncols; ++j)
-                res(i, j) = -99.0;
+            {
+                *(res_ptr + element_access(i, j, nrows, ncols)) = -99.0;
+                // res(i, j) = -99.0;
+            }
             continue;
         }
 
         for (size_t j = 0u; j < ncols; ++j)
-            res(i, j) = (*target)[i_effective][j];
+        {
+            *(res_ptr + element_access(i, j, nrows, ncols)) = (*target)[i_effective][j];
+        }
 
         i_effective++;
 
