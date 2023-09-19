@@ -1,17 +1,12 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h> // for py::array_t
-#include "barry.hpp"
-#include "models/defm.hpp"
+#include "defm-common.hpp"
 #include <vector>
 
 namespace py = pybind11;
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
-
-int add(int i, int j) {
-    return i + j;
-}
 
 
 std::shared_ptr< defm::DEFM > new_defm(
@@ -21,12 +16,11 @@ std::shared_ptr< defm::DEFM > new_defm(
     https://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html?highlight=mutable_data#arrays
     */
     py::array_t< int > y, 
-    py::array_t< double > x
+    py::array_t< double > x,
+    size_t order = 0u,
+    bool copy = false,
+    bool column_major = false
     ) {
-
-    // std::vector<int> id = {1, 2, 3, 4, 5};
-    // std::vector<int> y = {1, 2, 3, 4, 5};
-    // std::vector<double> x = {1.0, 2.0, 3.0, 4.0, 5.0};
 
     // Accessing the data buffer
     auto id_buff = id.request();
@@ -34,8 +28,8 @@ std::shared_ptr< defm::DEFM > new_defm(
     auto x_buff = x.request();
 
     int n_id = id.size();
-    int n_y = y.size();
-    int n_x = x.size();
+    int n_y = y.ndim() == 1 ? 1 : y.shape(1);
+    int n_x = x.ndim() == 1 ? 1 : x.shape(1);
 
     std::shared_ptr< defm::DEFM > object(new defm::DEFM(
         static_cast< int * >(id_buff.ptr),
@@ -44,8 +38,9 @@ std::shared_ptr< defm::DEFM > new_defm(
         static_cast< size_t >(n_id),
         static_cast< size_t >(n_y),
         static_cast< size_t >(n_x),
-        false,
-        false
+        order,
+        copy,
+        column_major
     ));
 
     return object;
@@ -66,6 +61,10 @@ void print_y(const std::shared_ptr< defm::DEFM > & object) {
     return;
 }
 
+// Externally declared
+void init_formulas(py::module_ &);
+void init_get_stats(py::module_ &);
+
 PYBIND11_MODULE(_core, m) {
     m.doc() = R"pbdoc(
         Pybind11 example plugin
@@ -76,22 +75,9 @@ PYBIND11_MODULE(_core, m) {
         .. autosummary::
            :toctree: _generate
 
-           add
-           subtract
+           new_defm
+           print_y
     )pbdoc";
-
-    m.def("add", &add, R"pbdoc(
-        Add two numbers
-
-        Some other explanation about the add function.
-    )pbdoc");
-
-    // Example with lambda function
-    m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-        Subtract two numbers
-
-        Some other explanation about the subtract function.
-    )pbdoc");
 
     // Only this is necesary to expose the class
     py::class_<defm::DEFM, std::shared_ptr<defm::DEFM>>(m, "DEFM")
@@ -100,6 +86,11 @@ PYBIND11_MODULE(_core, m) {
             Print the object
 
             Some other explanation about the print function.)
+        )pbdoc")
+        .def("init", &defm::DEFM::init, R"pbdoc(
+            Initialize the object
+
+            Some other explanation about the init function.)
         )pbdoc");
 
     // Example with shared_ptr
@@ -107,13 +98,23 @@ PYBIND11_MODULE(_core, m) {
         Create a new DEFM object
 
         Some other explanation about the new_defm function.
-    )pbdoc");
+    )pbdoc",
+        py::arg("id"),
+        py::arg("y"),
+        py::arg("x"),
+        py::arg("order") = 0,
+        py::arg("copy") = false,
+        py::arg("column_major") = false
+        );
 
     m.def("print_y", &print_y, R"pbdoc(
         Print the y vector
 
         Some other explanation about the print_y function.")
         )pbdoc");
+
+    init_formulas(m);
+    init_get_stats(m);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

@@ -57,9 +57,13 @@ Test call
 import pydefm as m
 import numpy as np
 
-y = np.array([0, 10, 3])
-x = np.array([1, 2.0, 3.4])
-id = np.array([11, 2, 3])
+y = np.column_stack(
+  (np.array([0, 0, 1, 1, 1, 1]),
+  np.array([0, 1, 1, 0, 0, 1]))
+)
+
+x = np.array([1, 2.0, 3.4, 3, 1, 2])
+id = np.array([1, 1, 1, 2, 2, 2])
 
 obj = m.new_defm(id, y, x)
 
@@ -68,10 +72,18 @@ obj
 ```
 
 
+Adding terms via formula
+
+```{python}
+m.term_formula(obj, "{0y0, y1}")
+obj.init()
+```
+
 ```{python}
 # We can export member functions from the C++ class. Here is
 # an example of a function defined in the C++ class:
 obj.print()
+m.get_stats(obj)
 ```
 
 Currently, the C++ code uses `printf` to print to the screen, which is a different buffer from Python (the problem will be solved using [this](https://pybind11.readthedocs.io/en/stable/advanced/pycpp/utilities.html?highlight=print#using-python-s-print-function-in-c){target="_blank"}).

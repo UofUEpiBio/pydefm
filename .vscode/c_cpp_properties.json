@@ -4,7 +4,8 @@
             "name": "Linux",
             "compilerPathInCppPropertiesJson": "/usr/bin/clang",
             "includePath": [
-                "/home/george/Documents/development/pydefm/**"
+                "${workspaceFolder}/**",
+                "~/.local/lib/python3.10/site-packages/pybind11/include/**"
             ],
             "defines": [],
             "cStandard": "c17",
@@ -15,7 +16,8 @@
             "configurationProvider": "ms-vscode.makefile-tools",
             "browse": {
                 "path": [
-                    "/home/george/Documents/development/pydefm"
+                    "${workspaceFolder}/",
+                    "~/.local/lib/python3.10/site-packages/pybind11/include/"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             }

@@ -11,7 +11,7 @@ find_package(pybind11 CONFIG REQUIRED)
 # Include the include/barry library
 include_directories(include/barry)
 
-python_add_library(_core MODULE src/main.cpp WITH_SOABI)
+python_add_library(_core MODULE src/main.cpp src/terms.cpp src/model.cpp WITH_SOABI)
 target_link_libraries(_core PRIVATE pybind11::headers)
 target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
 

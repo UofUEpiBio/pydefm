@@ -7,7 +7,7 @@ y = np.array([0, 10, 3])
 x = np.array([1, 2.0, 3.4])
 id = np.array([11, 2, 3])
 
-obj = m.new_defm(id, y, x)
+obj = m.new_defm(id, y, x, column_major = False)
 
 obj.print()
 
