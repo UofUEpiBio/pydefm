@@ -57,7 +57,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7ff6380b79b0>
+    <pydefm._core.DEFM at 0x7f250873d030>
 
 Adding terms via formula
 
