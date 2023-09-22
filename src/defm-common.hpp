@@ -54,4 +54,34 @@ inline void check_covar(
   }
 
 }
+
+#define DEFM_DEFINE_ACCESS(object) \
+    std::function<size_t(size_t,size_t,size_t,size_t)> element_access; \
+    if ((object)->get_column_major()) \
+    { \
+        element_access = [](size_t i, size_t j, size_t nrow, size_t) -> size_t { \
+            return i + j * nrow; \
+        }; \
+    } else { \
+        element_access = [](size_t i, size_t j, size_t, size_t ncol) -> size_t { \
+            return j + i * ncol; \
+        }; \
+    } 
+
+
+/**
+ * @brief Create a numpy array from a pointer
+ * @param res The numpy array
+ * @param ptr The pointer
+ * @param nrows The number of rows
+ * @param ncols The number of columns
+ * @param type_ The type of the array
+*/
+#define DEFM_WRAP_NUMPY(var_res, var_ptr, nrows, ncols, type_) \
+  py::array_t< type_ > (var_res)({nrows, ncols}); \
+    auto res_buff = (var_res).request(); \
+    type_ * var_ptr = static_cast< type_ * >(res_buff.ptr);
+
+
 #endif
+

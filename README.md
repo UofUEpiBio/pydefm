@@ -18,39 +18,46 @@ in R</a> and it can be used to count motifs and build Markov Random
 fields and other models like ERGMs. More information in [this
 preprint](https://arxiv.org/abs/2211.00627).
 
-## Installation
+# Installation
 
 - clone this repository
 - `pip install ./pydefm`
 
-## CI Examples
+# Examples
 
-There are examples for CI in `.github/workflows`. A simple way to
-produces binary “wheels” for all platforms is illustrated in the
-“wheels.yml” file, using
-[`cibuildwheel`](https://cibuildwheel.readthedocs.io).
+## Base setup
 
-## Test call
+Here we show how to create a `defm` object and add terms to it. We will
+use the following data:
 
 ``` python
+# Loading the module
 import pydefm as m
 import numpy as np
 
+# Creating a binary array
 y = np.column_stack(
   (np.array([0, 0, 1, 1, 1, 1]),
   np.array([0, 1, 1, 0, 0, 1]))
 )
 
+# Adding some random X plus the ids
 x = np.array([1, 2.0, 3.4, 3, 1, 2])
 id = np.array([1, 1, 1, 2, 2, 2])
+```
 
+Once we have the needed data – the binary array `y`, the covariates `x`
+and the ids `id` – we can create a `defm` object.
+
+``` python
+# Creating the object
 obj = m.new_defm(id, y, x, column_major = False)
 
 # Printing the object on screen shows it is a pointer
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7fd9a41dcaf0>
+    <pydefm._core.DEFM at 0x7ff6380b79b0>
 
 Adding terms via formula
 
@@ -100,3 +107,25 @@ y
            [1, 0],
            [1, 0],
            [1, 1]])
+
+Computing likelihood
+
+``` python
+par = np.array([.5, -.5, 1.0])
+obj.likelihood(par, as_log = True)
+```
+
+    -8.50334498844029
+
+And simulating
+
+``` python
+m.simulate(obj, par)
+```
+
+    array([[0, 0],
+           [0, 1],
+           [1, 0],
+           [1, 1],
+           [1, 1],
+           [1, 0]], dtype=int32)

@@ -42,30 +42,12 @@ py::array_t<double> get_stats(std::shared_ptr< defm::DEFM > m)
 
     const int * ID = m->get_ID();
 
-    py::array_t< double > res({nrows, ncols});
-
-    auto res_buff = res.request();
-    double * res_ptr = static_cast< double * >(res_buff.ptr);
-
+    DEFM_WRAP_NUMPY(res, res_ptr, nrows, ncols, double)
+    
     auto target = m->get_stats_target();
 
-    std::function<size_t(size_t,size_t,size_t,size_t)> element_access;
-
-    if (m->get_column_major())
-    {
-
-        element_access = [](size_t i, size_t j, size_t nrow, size_t) -> size_t {
-            return i + j * nrow;
-        };
-
-    } else {
-
-        element_access = [](size_t i, size_t j, size_t, size_t ncol) -> size_t {
-            return j + i * ncol;
-        };
-
-    }
-
+    // Figure out wether is column or row major
+    DEFM_DEFINE_ACCESS(m);
     
     size_t i_effective = 0u;
     size_t n_obs_i = 0u;

@@ -1,8 +1,11 @@
+#include <vector>
 #include <pybind11/pybind11.h>
 #include <pybind11/iostream.h>
+#include <pybind11/stl.h>
 #include <pybind11/numpy.h> // for py::array_t
 #include "defm-common.hpp"
-#include <vector>
+
+using namespace defm;
 
 namespace py = pybind11;
 
@@ -45,6 +48,35 @@ std::shared_ptr< defm::DEFM > new_defm(
     ));
 
     return object;
+}
+
+py::array_t< int > simulate(
+    std::shared_ptr< defm::DEFM > & object,
+    std::vector< double > par
+) {
+
+    // Getting the sizes
+    int n   = object->get_n_rows();
+    int n_y = object->get_n_y();
+
+    // Creating the output
+    DEFM_WRAP_NUMPY(y, y_ptr, n, n_y, int)
+
+    // Figure out wether is column or row major
+    DEFM_DEFINE_ACCESS(object);
+
+    std::vector< int > res(n * n_y);
+
+    object->simulate(par, &res[0u]);
+
+    // Filling in the data: the current default value is to return
+    // data in a column major fashion
+    for (size_t i = 0u; i < n; ++i)
+        for (size_t j = 0u; j < n_y; ++j)
+            *(y_ptr + element_access(i, j, n, n_y)) = res[j * n + i];
+
+    return y;
+
 }
 
 /**
@@ -94,6 +126,19 @@ PYBIND11_MODULE(_core, m) {
             Initialize the object
 
             Some other explanation about the init function.)
+        )pbdoc")
+        .def("likelihood", &defm::DEFM::likelihood_total, R"pbdoc(
+            Compute the likelihood
+
+            Some other explanation about the likelihood function.)
+        )pbdoc",
+            py::arg("par"),
+            py::arg("as_log") = false
+            )
+        .def("set_seed", &defm::DEFM::set_seed, R"pbdoc(
+            Set the seed
+
+            Some other explanation about the set_seed function.)
         )pbdoc");
 
     // Example with shared_ptr
@@ -117,6 +162,12 @@ PYBIND11_MODULE(_core, m) {
 
         Some other explanation about the print_y function.")
         )pbdoc");
+
+    m.def("simulate", &simulate, R"pbdoc(
+        Simulate data
+
+        Some other explanation about the simulate function.
+    )pbdoc");
 
     init_formulas(m);
     init_get_stats(m);

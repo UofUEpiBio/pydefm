@@ -65,6 +65,10 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "semaphore": "cpp",
-    "climits": "cpp"
+    "climits": "cpp",
+    "list": "cpp",
+    "set": "cpp",
+    "valarray": "cpp",
+    "variant": "cpp"
   }
 }
