@@ -1193,7 +1193,7 @@ inline void  BArray<Cell_Type, Data_Type>:: reserve () {
 }
 
 template<typename Cell_Type, typename Data_Type>
-inline void  BArray<Cell_Type, Data_Type>:: print (
+inline void  BArray<Cell_Type, Data_Type>::print (
     const char * fmt,
     ...
 ) const {

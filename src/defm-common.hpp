@@ -1,6 +1,24 @@
 #ifndef DEFM_COMMON_H
 #define DEFM_COMMON_H
 
+inline void pyprinter(const char * fmt, ...) 
+{
+
+  // Creating a buffer
+  char buffer[1024];
+
+  va_list args;
+  va_start(args, fmt);
+  vsprintf(&buffer[0], fmt, args);
+  va_end(args);
+
+  // Passing to pyprint
+  pybind11::print(std::string(buffer));
+
+}
+
+#define printf_barry pyprinter
+
 #include "barry.hpp"
 #include "models/defm.hpp"
 

@@ -50,7 +50,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7fb88ff22070>
+    <pydefm._core.DEFM at 0x7f3678119eb0>
 
 Adding terms via formula
 
@@ -59,8 +59,34 @@ m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
 obj.init()
-obj.print()
+obj.print() # Right now, printing shows at the end of the screen
 ```
+
+    Num. of Arrays       : 6
+
+    Support size         : 6
+
+    Support size range   : [4, 4]
+
+    Transform. Fun.      : no
+
+    Model terms (3)    :
+
+     - Motif {y0⁺}
+
+     - Motif {y1⁺}
+
+     - Motif {y0⁻, y1⁺}
+
+    Model rules (1)     :
+
+     - Markov model of order 0
+
+    Model Y variables (2):
+
+      0) y0
+
+      1) y1
 
 ``` python
 counts = m.get_stats(obj)
@@ -97,17 +123,4 @@ target="_blank">this</a>).
 m.print_y(obj)
 ```
 
-    Num. of Arrays       : 6
-    Support size         : 6
-    Support size range   : [4, 4]
-    Transform. Fun.      : no
-    Model terms (3)    :
-     - Motif {y0⁺}
-     - Motif {y1⁺}
-     - Motif {y0⁻, y1⁺}
-    Model rules (1)     :
-     - Markov model of order 0
-    Model Y variables (2):
-      0) y0
-      1) y1
     0 0 

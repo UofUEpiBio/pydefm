@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/iostream.h>
 #include <pybind11/numpy.h> // for py::array_t
 #include "defm-common.hpp"
 #include <vector>
@@ -82,7 +83,9 @@ PYBIND11_MODULE(_core, m) {
     // Only this is necesary to expose the class
     py::class_<defm::DEFM, std::shared_ptr<defm::DEFM>>(m, "DEFM")
         // .def(py::init<>())
-        .def("print", &defm::DEFM::print, R"pbdoc(
+        .def("print", &defm::DEFM::print,
+            // py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>(),
+            R"pbdoc(
             Print the object
 
             Some other explanation about the print function.)
@@ -107,7 +110,9 @@ PYBIND11_MODULE(_core, m) {
         py::arg("column_major") = false
         );
 
-    m.def("print_y", &print_y, R"pbdoc(
+    m.def("print_y", &print_y,
+        // py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>(),
+        R"pbdoc(
         Print the y vector
 
         Some other explanation about the print_y function.")

@@ -64,6 +64,7 @@
     "cinttypes": "cpp",
     "typeindex": "cpp",
     "typeinfo": "cpp",
-    "semaphore": "cpp"
+    "semaphore": "cpp",
+    "climits": "cpp"
   }
 }

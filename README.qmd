@@ -75,6 +75,8 @@ obj
 Adding terms via formula
 
 ```{python}
+#| echo: true
+#| output: true
 m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
