@@ -1,6 +1,8 @@
 #ifndef DEFM_COMMON_H
 #define DEFM_COMMON_H
 
+using namespace pybind11::literals;
+
 inline void pyprinter(const char * fmt, ...) 
 {
 
@@ -13,7 +15,7 @@ inline void pyprinter(const char * fmt, ...)
   va_end(args);
 
   // Passing to pyprint
-  pybind11::print(std::string(buffer));
+  pybind11::print(std::string(buffer), pybind11::arg("end") = "");
 
 }
 

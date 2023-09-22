@@ -81,7 +81,7 @@ m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
 obj.init()
-obj.print() # Right now, printing shows at the end of the screen
+obj.print() 
 ```
 
 ```{python}
@@ -95,11 +95,5 @@ Notice the first two columns coincide with the `y` array:
 y
 ```
 
-Currently, the C++ code uses `printf` to print to the screen, which is a different buffer from Python (the problem will be solved using [this](https://pybind11.readthedocs.io/en/stable/advanced/pycpp/utilities.html?highlight=print#using-python-s-print-function-in-c){target="_blank"}).
-
-```{python}
-# Checking if the data is recovered
-m.print_y(obj)
-```
 
 [`cibuildwheel`]:          https://cibuildwheel.readthedocs.io

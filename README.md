@@ -50,7 +50,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7f3678119eb0>
+    <pydefm._core.DEFM at 0x7fd9a41dcaf0>
 
 Adding terms via formula
 
@@ -59,33 +59,21 @@ m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
 obj.init()
-obj.print() # Right now, printing shows at the end of the screen
+obj.print() 
 ```
 
     Num. of Arrays       : 6
-
     Support size         : 6
-
     Support size range   : [4, 4]
-
     Transform. Fun.      : no
-
     Model terms (3)    :
-
      - Motif {y0⁺}
-
      - Motif {y1⁺}
-
      - Motif {y0⁻, y1⁺}
-
     Model rules (1)     :
-
      - Markov model of order 0
-
     Model Y variables (2):
-
       0) y0
-
       1) y1
 
 ``` python
@@ -112,15 +100,3 @@ y
            [1, 0],
            [1, 0],
            [1, 1]])
-
-Currently, the C++ code uses `printf` to print to the screen, which is a
-different buffer from Python (the problem will be solved using <a
-href="https://pybind11.readthedocs.io/en/stable/advanced/pycpp/utilities.html?highlight=print#using-python-s-print-function-in-c"
-target="_blank">this</a>).
-
-``` python
-# Checking if the data is recovered
-m.print_y(obj)
-```
-
-    0 0 
