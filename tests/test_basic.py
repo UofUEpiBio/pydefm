@@ -1,9 +1,7 @@
+from __future__ import annotations
 import warnings
 
 warnings.filterwarnings("ignore", category=ImportWarning)
-
-from __future__ import annotations
-
 
 import pydefm as m
 import numpy as np
