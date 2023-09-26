@@ -78,8 +78,8 @@ inline void check_covar(
  * @param type_ The type of the array
 */
 #define DEFM_WRAP_NUMPY(var_res, var_ptr, nrows, ncols, type_) \
-  py::array_t< type_ > (var_res)({nrows, ncols}); \
-    auto res_buff = (var_res).request(); \
+  py::array_t< type_ > var_res ({nrows, ncols}); \
+    auto res_buff = var_res .request(); \
     type_ * var_ptr = static_cast< type_ * >(res_buff.ptr);
 
 
