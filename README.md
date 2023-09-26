@@ -1,9 +1,9 @@
 # pydefm: Python bindings for defm
 
-| CI           | status                                                                                                                                                         |
-|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| conda.recipe | [![Conda Actions Status](https://github.com/UofUEpiBio/pydefm/workflows/Conda/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AConda) |
-| pip builds   | [![Pip Actions Status](https://github.com/UofUEpiBio/pydefm/workflows/Pip/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3APip)       |
+| CI           | status                                                                                                                                                                     |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| conda.recipe | [![Conda Actions Status](https://github.com/UofUEpiBio/pydefm/actions/workflows/conda.yml/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AConda) |
+| pip builds   | [![Pip Actions Status](https://github.com/UofUEpiBio/pydefm/actions/workflows/pip.yml/badge.svg)](https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3APip)       |
 
 This is a python wrapper of the [`barry c++`
 library](https://github.com/USCbiostats/barry), and in particular, of
@@ -57,7 +57,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7f32441dff30>
+    <pydefm._core.DEFM at 0x7ff7f41bb970>
 
 Adding terms via formula
 

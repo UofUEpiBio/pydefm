@@ -29,9 +29,9 @@ ERGMs. More information in [this preprint](https://arxiv.org/abs/2211.00627).
 [gitter-link]:             https://gitter.im/pybind/Lobby
 [actions-badge]:           https://github.com/UofUEpiBio/pydefm/workflows/Tests/badge.svg
 [actions-conda-link]:      https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AConda
-[actions-conda-badge]:     https://github.com/UofUEpiBio/pydefm/workflows/Conda/badge.svg
+[actions-conda-badge]:     https://github.com/UofUEpiBio/pydefm/actions/workflows/conda.yml/badge.svg
 [actions-pip-link]:        https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3APip
-[actions-pip-badge]:       https://github.com/UofUEpiBio/pydefm/workflows/Pip/badge.svg
+[actions-pip-badge]:       https://github.com/UofUEpiBio/pydefm/actions/workflows/pip.yml/badge.svg
 [actions-wheels-link]:     https://github.com/UofUEpiBio/pydefm/actions?query=workflow%3AWheels
 [actions-wheels-badge]:    https://github.com/UofUEpiBio/pydefm/workflows/Wheels/badge.svg
 
