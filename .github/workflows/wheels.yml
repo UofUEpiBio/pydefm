@@ -50,6 +50,21 @@ jobs:
       with:
         submodules: true
 
+    - name: Install OpenBLAS
+      if: matrix.os == 'windows-latest'
+      run: |
+        # Download OpenBLAS
+        curl -L -o openblas.zip https://github.com/xianyi/OpenBLAS/releases/download/v0.3.18/OpenBLAS-v0.3.18-Win64-int32.zip
+        # Extract OpenBLAS
+        powershell -Command "Expand-Archive -Path openblas.zip -DestinationPath openblas"
+        # Add OpenBLAS to PATH
+        $env:PATH += ';C:\path\to\openblas\bin'
+
+    - name: Install OpenBlas Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt install libopenblas-dev
+
     - uses: pypa/cibuildwheel@v2.15
       env:
         CIBW_ARCHS_MACOS: universal2
