@@ -3,6 +3,10 @@ from __future__ import annotations
 import pydefm as m
 import numpy as np
 
+import warnings
+
+warnings.filterwarnings("ignore", category=ImportWarning)
+
 y = np.array([0, 10, 3])
 x = np.array([1, 2.0, 3.4])
 id = np.array([11, 2, 3])
