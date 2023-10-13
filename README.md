@@ -57,7 +57,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7ff7f41bb970>
+    <pydefm._core.DEFM at 0x7f28b46956f0>
 
 Adding terms via formula
 
@@ -129,3 +129,11 @@ m.simulate(obj, par)
            [1, 1],
            [1, 1],
            [1, 0]], dtype=int32)
+
+# Acknowledgements
+
+This port work was supported by the Office of the Assistant Secretary of
+Defense for Health Affairs through the Epilepsy Research Program under
+Award No. HT94252310221. Opinions, interpretations, conclusions, and
+recommendations are those of the author and are not necessarily endorsed
+by the Department of Defense.

@@ -113,3 +113,8 @@ m.simulate(obj, par)
 
 
 [`cibuildwheel`]:          https://cibuildwheel.readthedocs.io
+
+
+# Acknowledgements
+
+This port work was supported by the Office of the Assistant Secretary of Defense for Health Affairs through the Epilepsy Research Program under Award No. HT94252310221. Opinions, interpretations, conclusions, and recommendations are those of the author and are not necessarily endorsed by the Department of Defense.
