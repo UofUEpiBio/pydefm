@@ -9,19 +9,20 @@ inline std::vector< double > keygen_defm(
     size_t nrow = Array_.nrow();
     size_t ncol = Array_.ncol();
 
-    std::vector< double > res(
+    std::vector< double > res;
+    res.reserve(
         2u +                // Rows + cols
         ncol * (nrow - 1u) // Markov cells
         );
 
-    res[0u] = static_cast<double>(nrow);
-    res[1u] = static_cast<double>(ncol);
+    res.push_back(static_cast<double>(nrow));
+    res.push_back(static_cast<double>(ncol));
 
-    size_t iter = 2u;
+    // size_t iter = 2u;
     // Adding the cells
     for (size_t i = 0u; i < (nrow - 1); ++i)
         for (size_t j = 0u; j < ncol; ++j)
-            res[iter++] = Array_(i, j);
+            res.push_back(Array_(i, j));
 
     return res;
 
@@ -74,7 +75,10 @@ inline void DEFM::simulate(
 
                 // Setting the data
                 tmp_array.set_data(
-                    new DEFMData(&tmp_array, X, (start_i + proc_n), X_ncol, ID_length),
+                    new DEFMData(
+                        &tmp_array, X, (start_i + proc_n), X_ncol, ID_length,
+                        this->column_major
+                        ),
                     true // Delete the data
                 );
 
@@ -201,10 +205,10 @@ inline DEFM::DEFM(
 
     // Creating the names
     for (auto i = 0u; i < Y_ncol; ++i)
-        Y_names.push_back(std::string("y") + std::to_string(i));
+        Y_names.emplace_back(std::string("y") + std::to_string(i));
 
     for (auto i = 0u; i < X_ncol; ++i)
-        X_names.push_back(std::string("X") + std::to_string(i));
+        X_names.emplace_back(std::string("X") + std::to_string(i));
 
     return;    
 
@@ -252,7 +256,10 @@ inline void DEFM::init()
             // Creating the array for process n_proc and setting the data
             DEFMArray array(M_order + 1u, Y_ncol);
             array.set_data(
-                new DEFMData(&array, X, (start_i + n_proc), X_ncol, ID_length),
+                new DEFMData(
+                    &array, X, (start_i + n_proc), X_ncol, ID_length,
+                    this->column_major
+                    ),
                 true // Delete the data
             );
 
@@ -376,7 +383,10 @@ inline std::vector< double > DEFM::logodds(
             // Creating the array for process n_proc and setting the data
             DEFMArray array(M_order + 1u, Y_ncol);
             array.set_data(
-                new DEFMData(&array, X, (start_i + n_proc), X_ncol, ID_length),
+                new DEFMData(
+                    &array, X, (start_i + n_proc), X_ncol, ID_length,
+                    this->column_major
+                    ),
                 true // Delete the data
             );
 
@@ -404,7 +414,7 @@ inline void DEFM::set_names(
 
     // Checking the length
     if (Y_names_.size() != Y_ncol)
-        throw std::length_error("The length of Y_names_ doesn't match the number of dependent variables.");
+         throw std::length_error("The length of Y_names_ doesn't match the number of dependent variables.");
 
     if (X_names_.size() != X_ncol)
         throw std::length_error("The length of X_names_ doesn't match the number of dependent variables.");

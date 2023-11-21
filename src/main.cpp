@@ -133,7 +133,9 @@ PYBIND11_MODULE(_core, m) {
             Some other explanation about the likelihood function.)
         )pbdoc",
             py::arg("par"),
-            py::arg("as_log") = false
+            py::arg("as_log") = false,
+            py::arg("ncores") = 1u,
+            py::arg("no_update_normconst") = false
             )
         .def("set_seed", &defm::DEFM::set_seed, R"pbdoc(
             Set the seed
