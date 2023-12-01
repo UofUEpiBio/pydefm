@@ -57,7 +57,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7f28b46956f0>
+    <pydefm._core.DEFM at 0x7f0bd16949b0>
 
 Adding terms via formula
 
@@ -72,12 +72,13 @@ obj.print()
     Num. of Arrays       : 6
     Support size         : 6
     Support size range   : [4, 4]
+    Arrays in powerset   : 24
     Transform. Fun.      : no
-    Model terms (3)    :
-     - Motif {y0⁺}
-     - Motif {y1⁺}
+    Model terms ( 3)    :
+     - Logit intercept y0
+     - Logit intercept y1
      - Motif {y0⁻, y1⁺}
-    Model rules (1)     :
+    Model rules (1)    :
      - Markov model of order 0
     Model Y variables (2):
       0) y0
@@ -113,9 +114,44 @@ Computing likelihood
 ``` python
 par = np.array([.5, -.5, 1.0])
 obj.likelihood(par, as_log = True)
+
+from scipy.optimize import minimize
+
+# Function to find the MLE
+def mle(par):
+  return -obj.likelihood(par, as_log = True)
+
+def defm_mle(par):
+  res = minimize(mle, par)
+  return {
+    "par": res.x,
+    "or": np.exp(res.x),
+    "se": np.sqrt(np.diag(res.hess_inv)),
+    "ll": -res.fun,
+    "optimres": res
+  }
+
+# Finding the MLE
+res = defm_mle(np.array([.5, -.5, 1.0]))
+res
 ```
 
-    -8.50334498844029
+    {'par': array([ 6.93148905e-01, -1.45864412e-05,  1.43467100e-05]),
+     'or': array([2.00000345, 0.99998541, 1.00001435]),
+     'se': array([1.24166077, 1.01824626, 1.7324735 ]),
+     'll': -7.9779680932546455,
+     'optimres':   message: Optimization terminated successfully.
+       success: True
+        status: 0
+           fun: 7.9779680932546455
+             x: [ 6.931e-01 -1.459e-05  1.435e-05]
+           nit: 7
+           jac: [ 0.000e+00 -3.815e-06  5.722e-06]
+      hess_inv: [[ 1.542e+00 -4.843e-01  1.528e+00]
+                 [-4.843e-01  1.037e+00 -9.952e-01]
+                 [ 1.528e+00 -9.952e-01  3.001e+00]]
+          nfev: 32
+          njev: 8}
 
 And simulating
 
