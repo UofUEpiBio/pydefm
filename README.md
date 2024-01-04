@@ -57,7 +57,7 @@ obj = m.new_defm(id, y, x, column_major = False)
 obj
 ```
 
-    <pydefm._core.DEFM at 0x7f0bd16949b0>
+    <pydefm._core.DEFM at 0x7f602865fd30>
 
 Adding terms via formula
 
@@ -115,43 +115,16 @@ Computing likelihood
 par = np.array([.5, -.5, 1.0])
 obj.likelihood(par, as_log = True)
 
-from scipy.optimize import minimize
-
-# Function to find the MLE
-def mle(par):
-  return -obj.likelihood(par, as_log = True)
-
-def defm_mle(par):
-  res = minimize(mle, par)
-  return {
-    "par": res.x,
-    "or": np.exp(res.x),
-    "se": np.sqrt(np.diag(res.hess_inv)),
-    "ll": -res.fun,
-    "optimres": res
-  }
-
 # Finding the MLE
-res = defm_mle(np.array([.5, -.5, 1.0]))
-res
+res = m.defm_mle(obj, np.array([.5, -.5, 1.0]))
+print(res)
 ```
 
-    {'par': array([ 6.93148905e-01, -1.45864412e-05,  1.43467100e-05]),
-     'or': array([2.00000345, 0.99998541, 1.00001435]),
-     'se': array([1.24166077, 1.01824626, 1.7324735 ]),
-     'll': -7.9779680932546455,
-     'optimres':   message: Optimization terminated successfully.
-       success: True
-        status: 0
-           fun: 7.9779680932546455
-             x: [ 6.931e-01 -1.459e-05  1.435e-05]
-           nit: 7
-           jac: [ 0.000e+00 -3.815e-06  5.722e-06]
-      hess_inv: [[ 1.542e+00 -4.843e-01  1.528e+00]
-                 [-4.843e-01  1.037e+00 -9.952e-01]
-                 [ 1.528e+00 -9.952e-01  3.001e+00]]
-          nfev: 32
-          njev: 8}
+    defm_mle_fit
+        par =[ 0.69, --0.00,  0.00],
+        or  =[ 2.00,  1.00,  1.00],
+        se  =[ 1.24,  1.02,  1.73]
+        ll  =-7.98
 
 And simulating
 

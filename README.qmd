@@ -103,25 +103,9 @@ Computing likelihood
 par = np.array([.5, -.5, 1.0])
 obj.likelihood(par, as_log = True)
 
-from scipy.optimize import minimize
-
-# Function to find the MLE
-def mle(par):
-  return -obj.likelihood(par, as_log = True)
-
-def defm_mle(par):
-  res = minimize(mle, par)
-  return {
-    "par": res.x,
-    "or": np.exp(res.x),
-    "se": np.sqrt(np.diag(res.hess_inv)),
-    "ll": -res.fun,
-    "optimres": res
-  }
-
 # Finding the MLE
-res = defm_mle(np.array([.5, -.5, 1.0]))
-res
+res = m.defm_mle(obj, np.array([.5, -.5, 1.0]))
+print(res)
 
 ```
 
