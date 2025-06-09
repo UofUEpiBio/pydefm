@@ -1,4 +1,4 @@
-#ifndef BARRY_BARRAYDENSE_BONES_HPP 
+#ifndef BARRY_BARRAYDENSE_BONES_HPP
 #define BARRY_BARRAYDENSE_BONES_HPP 1
 
 template<typename Cell_Type, typename Data_Type>
@@ -21,7 +21,7 @@ class BArrayDenseCell_const;
 
 /**
  * @brief Baseline class for binary arrays.
- * 
+ *
  * `BArrayDense` class objects are arbitrary dense-arrays. The data
  * is stored internally in the `el` member, which can be accessed
  * using the member function `get_data()`, by column.
@@ -52,8 +52,8 @@ private:
     static const bool dense = true;
 
 public:
-    
-    /** 
+
+    /**
      * This is as a reference, if we need to iterate through the cells and we need
      * to keep track which were visited, we use this as a reference. So that if
      * cell.visited = true and visited = true, it means that we haven't been here
@@ -61,11 +61,11 @@ public:
      * beginning of the routine.
      */
     bool visited = false;
-    
+
 
     /**
      * @name Constructors
-     * 
+     *
      * @param N_ Number of rows
      * @param M_ Number of columns
      * @param source An unsigned vector ranging from 0 to N_
@@ -74,15 +74,15 @@ public:
      * @param value Cell_Type defaul fill-in value (zero, by default.)
      */
     ///@{
-    
+
     /** @brief Zero-size array */
     BArrayDense() : N(0u), M(0u), el(0u), el_rowsums(0u), el_colsums(0u) {};
-    
+
     /** @brief Empty array */
     BArrayDense (size_t N_, size_t M_, Cell_Type value = static_cast<Cell_Type>(0)) :
         N(N_), M(M_), el(N_ * M_, value),
         el_rowsums(N_, static_cast<Cell_Type>(value * M_)), el_colsums(M_, static_cast<Cell_Type>(value * N_)) {};
-    
+
     /** @brief Edgelist with data */
     BArrayDense (
         size_t N_,
@@ -92,7 +92,7 @@ public:
         const std::vector< Cell_Type > & value,
         bool add = true
     );
-    
+
     /** @brief Edgelist with no data (simpler) */
     BArrayDense (
         size_t N_, size_t M_,
@@ -100,10 +100,10 @@ public:
         const std::vector< size_t > & target,
         bool add = true
     );
-    
+
     /** @brief Copy constructor */
     BArrayDense(const BArrayDense<Cell_Type,Data_Type> & Array_, bool copy_data = false);
-    
+
     /** @brief Assignment constructor */
     BArrayDense<Cell_Type,Data_Type> & operator=(const BArrayDense<Cell_Type,Data_Type> & Array_);
 
@@ -113,20 +113,20 @@ public:
     /** @brief Move assignment */
     BArrayDense<Cell_Type,Data_Type> & operator=(BArrayDense<Cell_Type,Data_Type> && x) noexcept;
     ///@}
-    
+
     bool operator==(const BArrayDense<Cell_Type,Data_Type> & Array_);
 
     ~BArrayDense();
-    
+
     // In principle, copy can be faster by using openmp on the rows
     // since those are independent.
     // BArrayDense(BArrayDense & A);
-    
+
     /**
      * @brief Set the data object
-     * 
-     * @param data_ 
-     * @param delete_data_ 
+     *
+     * @param data_
+     * @param delete_data_
      */
     ///@{
     void set_data(Data_Type * data_, bool delete_data_ = false);
@@ -135,16 +135,16 @@ public:
     Data_Type & D();
     const Data_Type & D() const;
     ///@}
-    
+
     // Function to access the elements
     // bool check_cell
     void out_of_range(size_t i, size_t j) const;
-    Cell_Type get_cell(size_t i, size_t j, bool check_bounds = true) const; 
+    Cell_Type get_cell(size_t i, size_t j, bool check_bounds = true) const;
     std::vector< Cell_Type >      get_col_vec(size_t i, bool check_bounds = true) const;
     std::vector< Cell_Type >      get_row_vec(size_t i, bool check_bounds = true) const;
     void                          get_col_vec(std::vector< Cell_Type > * x, size_t i, bool check_bounds = true) const;
     void                          get_row_vec(std::vector< Cell_Type > * x, size_t i, bool check_bounds = true) const;
-    
+
     BArrayDenseRow<Cell_Type,Data_Type> & row(size_t i, bool check_bounds = true);
     const BArrayDenseRow_const<Cell_Type,Data_Type> row(size_t i, bool check_bounds = true) const;
 
@@ -153,12 +153,12 @@ public:
 
     /**
      * @brief Get the edgelist
-     * 
+     *
      * `Entries` is a class with three objects: Two `std::vector` with the row and
      * column coordinates respectively, and one `std::vector` with the corresponding
      * value of the cell.
-     * 
-     * @return Entries<Cell_Type> 
+     *
+     * @return Entries<Cell_Type>
      */
     Entries<Cell_Type> get_entries() const;
 
@@ -186,37 +186,37 @@ public:
      * delete/add), or, in the case of `swap_cells`, check if either of both
      * cells exists/don't exist.
      */
-    ///@{  
+    ///@{
     BArrayDense<Cell_Type,Data_Type> & operator+=(const std::pair<size_t, size_t> & coords);
     BArrayDense<Cell_Type,Data_Type> & operator-=(const std::pair<size_t, size_t> & coords);
     BArrayDenseCell<Cell_Type,Data_Type> operator()(size_t i, size_t j, bool check_bounds = true);
     const Cell_Type operator()(size_t i, size_t j, bool check_bounds = true) const;
-    
+
     void rm_cell(size_t i, size_t j, bool check_bounds = true, bool check_exists = true);
-    
+
     void insert_cell(size_t i, size_t j, const Cell< Cell_Type > & v, bool check_bounds, bool);
     // void insert_cell(size_t i, size_t j, Cell< Cell_Type > && v, bool check_bounds, bool check_exists);
     void insert_cell(size_t i, size_t j, Cell_Type v, bool check_bounds, bool);
-    
+
     void swap_cells(
         size_t i0, size_t j0, size_t i1, size_t j1, bool check_bounds = true,
         int check_exists = CHECK::BOTH,
         int * report     = nullptr
         );
-    
+
     void toggle_cell(size_t i, size_t j, bool check_bounds = true, int check_exists = EXISTS::UKNOWN);
     void toggle_lock(size_t i, size_t j, bool check_bounds = true);
     ///@}
-    
+
     /**@name Column/row wise interchange*/
     ///@{
     void swap_rows(size_t i0, size_t i1, bool check_bounds = true);
     void swap_cols(size_t j0, size_t j1, bool check_bounds = true);
-    
+
     void zero_row(size_t i, bool check_bounds = true);
     void zero_col(size_t j, bool check_bounds = true);
     ///@}
-    
+
     void transpose();
     void clear(bool hard = true);
     void resize(size_t N_, size_t M_);
@@ -224,13 +224,13 @@ public:
 
     // Advances operators
     // void toggle_iterator
-    
+
     // Misc
     void print(const char * fmt = nullptr, ...) const;
 
     /**
      * @name Arithmetic operators
-     * 
+     *
      */
     ///@{
     BArrayDense<Cell_Type,Data_Type>& operator+=(const BArrayDense<Cell_Type,Data_Type>& rhs);
@@ -238,11 +238,11 @@ public:
 
     BArrayDense<Cell_Type,Data_Type>& operator-=(const BArrayDense<Cell_Type,Data_Type>& rhs);
     BArrayDense<Cell_Type,Data_Type>& operator-=(const Cell_Type & rhs);
-    
+
     BArrayDense<Cell_Type,Data_Type>& operator/=(const Cell_Type & rhs);
     BArrayDense<Cell_Type,Data_Type>& operator*=(const Cell_Type & rhs);
     ///@}
-    
+
     // /**
     //  * @name Casting between types
     //  */
@@ -252,7 +252,7 @@ public:
     // operator BArrayDense<size_t,bool>() const;
     // operator BArrayDense<bool,bool>() const;
     // ///@}
-    
+
     bool is_dense() const noexcept {return dense;};
 
     const std::vector< Cell_Type > & get_data() const;

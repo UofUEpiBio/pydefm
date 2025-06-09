@@ -1,40 +1,40 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/numpy.h> 
+#include <pybind11/numpy.h>
 
 #include "defm-common.hpp"
 
 namespace py = pybind11;
 
 //' Get sufficient statistics counts
-//' 
+//'
 //' This function computes the individual counts of the sufficient statistics
-//' included in the model. 
+//' included in the model.
 //' @param m An object of class [DEFM].
 //' @export
 //' @return A matrix with the counts of the sufficient statistics.
 //' @examples
 //' data(valentesnsList)
-//' 
+//'
 //' mymodel <- new_defm(
 //'   id = valentesnsList$id,
 //'   Y = valentesnsList$Y,
 //'   X = valentesnsList$X,
 //'   order = 1
 //' )
-//' 
+//'
 //' # Adding the intercept terms and a motif from tobacco to mj
 //' term_defm_logit_intercept(mymodel)
 //' term_defm_transition_formula(mymodel, "{y1, 0y2} > {y1, y2}")
-//' 
+//'
 //' # Initialize the model
 //' init_defm(mymodel)
-//' 
+//'
 //' # Get the counts
 //' head(get_stats(mymodel))
 // [[Rcpp::export(rng = false)]]
 py::array_t<double> get_stats(std::shared_ptr< defm::DEFM > m)
 {
-   
+
     // Getting sizes
     size_t nrows = m->get_n_rows();
     size_t ncols = m->nterms();
@@ -43,12 +43,12 @@ py::array_t<double> get_stats(std::shared_ptr< defm::DEFM > m)
     const int * ID = m->get_ID();
 
     DEFM_WRAP_NUMPY(res, res_ptr, nrows, ncols, double)
-    
+
     auto target = m->get_stats_target();
 
     // Figure out wether is column or row major
     DEFM_DEFINE_ACCESS(m);
-    
+
     size_t i_effective = 0u;
     size_t n_obs_i = 0u;
     for (size_t i = 0u; i < nrows; ++i)
@@ -98,5 +98,3 @@ void init_get_stats(py::module_ &m)
         )pbdoc");
 
 }
-
-

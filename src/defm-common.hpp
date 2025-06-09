@@ -3,7 +3,7 @@
 
 using namespace pybind11::literals;
 
-inline void pyprinter(const char * fmt, ...) 
+inline void pyprinter(const char * fmt, ...)
 {
 
   // Creating a buffer
@@ -66,7 +66,7 @@ inline void check_covar(
         element_access = [](size_t i, size_t j, size_t, size_t ncol) -> size_t { \
             return j + i * ncol; \
         }; \
-    } 
+    }
 
 
 /**
@@ -84,4 +84,3 @@ inline void check_covar(
 
 
 #endif
-

@@ -45,7 +45,7 @@ COUNTER_TEMPLATE(COUNTER_TYPE(),operator=)(
         this->init_fun = counter_.init_fun;
         this->hasher_fun = counter_.hasher_fun;
 
-        
+
         this->data = counter_.data;
         this->name = counter_.name;
         this->desc = counter_.desc;
@@ -155,7 +155,7 @@ COUNTERS_TEMPLATE(COUNTERS_TYPE(), operator=)(const Counters<Array_Type,Data_Typ
 
 }
 
-COUNTERS_TEMPLATE(COUNTERS_TYPE() &, operator=)(Counters<Array_Type,Data_Type> && counters_) noexcept 
+COUNTERS_TEMPLATE(COUNTERS_TYPE() &, operator=)(Counters<Array_Type,Data_Type> && counters_) noexcept
 {
 
     if (this != &counters_) {
@@ -169,9 +169,9 @@ COUNTERS_TEMPLATE(COUNTERS_TYPE() &, operator=)(Counters<Array_Type,Data_Type> &
 
 COUNTERS_TEMPLATE(void, add_counter)(Counter<Array_Type, Data_Type> counter)
 {
-    
+
     data.push_back(counter);
-    
+
     return;
 }
 
@@ -184,7 +184,7 @@ COUNTERS_TEMPLATE(void, add_counter)(
     std::string                            desc_
 )
 {
-  
+
     data.emplace_back(Counter<Array_Type,Data_Type>(
         count_fun_,
         init_fun_,
@@ -193,9 +193,9 @@ COUNTERS_TEMPLATE(void, add_counter)(
         name_,
         desc_
     ));
-  
+
     return;
-    
+
 }
 
 COUNTERS_TEMPLATE(std::vector<std::string>, get_names)() const
@@ -212,7 +212,7 @@ COUNTERS_TEMPLATE(std::vector<std::string>, get_names)() const
 
 COUNTERS_TEMPLATE(std::vector<std::string>, get_descriptions)() const
 {
-    
+
     std::vector< std::string > out;
     out.reserve(this->size());
     for (size_t i = 0u; i < this->size(); ++i)
@@ -228,7 +228,7 @@ COUNTERS_TEMPLATE(std::vector<double>, gen_hash)(
 )
 {
     std::vector<double> res;
-    
+
     // Iterating over the counters
     for (auto & c: data)
     {
@@ -281,4 +281,4 @@ COUNTERS_TEMPLATE(void, add_hash)(
 #undef COUNTERS_TEMPLATE_ARGS
 #undef COUNTERS_TEMPLATE
 
-#endif 
+#endif

@@ -1,5 +1,5 @@
 build:
-	pip3 install .
-	
+    pip3 install .
+
 update:
-	rsync -avz ../barry/include/barry include/
+    rsync -avz ../barry/include/barry include/

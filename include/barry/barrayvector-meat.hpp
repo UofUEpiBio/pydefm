@@ -12,7 +12,7 @@ inline void BArrayVector<Cell_Type,Data_Type>::init_vec() {
 
         for (const auto& a : Array->el_ij[i])
             vec.push_back(a);
-            
+
     } else {
 
         for (const auto& a : Array->el_ji[i])
@@ -42,13 +42,13 @@ inline size_t BArrayVector<Cell_Type,Data_Type>::size() const noexcept {
         return Array->el_ij[i].size();
     else
         return Array->el_ji[i].size();
-    
+
 
 }
 
 template<typename Cell_Type, typename Data_Type>
 inline std::vector< Cell_Type >::const_iterator BArrayVector<Cell_Type,Data_Type>::begin() noexcept {
-    
+
     // For this, we will need the iterator
     init_vec();
 
@@ -67,10 +67,10 @@ inline std::vector< Cell_Type >::const_iterator BArrayVector<Cell_Type,Data_Type
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayVector<Cell_Type,Data_Type>::operator=(const Cell_Type & val) {
-    
+
     size_t k = 0u;
     size_t N_ = (dim == 0u) ? Array->nrow() : Array->ncol();
-    
+
     if (dim == 0u)
     {
 
@@ -89,10 +89,10 @@ inline void BArrayVector<Cell_Type,Data_Type>::operator=(const Cell_Type & val) 
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayVector<Cell_Type,Data_Type>::operator+=(const Cell_Type & val) {
-    
+
     size_t k = 0u;
     size_t N_ = (dim == 0u) ? Array->nrow() : Array->ncol();
-    
+
     if (dim == 0u)
     {
 
@@ -110,10 +110,10 @@ inline void BArrayVector<Cell_Type,Data_Type>::operator+=(const Cell_Type & val)
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayVector<Cell_Type,Data_Type>::operator-=(const Cell_Type & val) {
-    
+
     size_t k = 0u;
     size_t N_ = (dim == 0u) ? Array->nrow() : Array->ncol();
-    
+
     if (dim == 0u)
     {
 
@@ -131,10 +131,10 @@ inline void BArrayVector<Cell_Type,Data_Type>::operator-=(const Cell_Type & val)
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayVector<Cell_Type,Data_Type>::operator*=(const Cell_Type & val) {
-    
+
     size_t k = 0u;
     size_t N_ = (dim == 0u) ? Array->nrow() : Array->ncol();
-    
+
     if (dim == 0u)
     {
 
@@ -152,10 +152,10 @@ inline void BArrayVector<Cell_Type,Data_Type>::operator*=(const Cell_Type & val)
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayVector<Cell_Type,Data_Type>::operator/=(const Cell_Type & val) {
-    
+
     size_t k = 0u;
     size_t N_ = (dim == 0u) ? Array->nrow() : Array->ncol();
-    
+
     if (dim == 0u)
     {
 
@@ -178,7 +178,7 @@ inline BArrayVector<Cell_Type,Data_Type>::operator std::vector< Cell_Type >() co
         return Array->get_row_vec(i, false);
     else
         return Array->get_col_vec(i, false);
-        
+
 }
 
 template<typename Cell_Type,typename Data_Type>
@@ -205,7 +205,7 @@ inline bool BArrayVector<Cell_Type,Data_Type>::operator==(const Cell_Type & val)
     }
 
     return true;
-    
+
 }
 
 template<typename Cell_Type,typename Data_Type>
@@ -215,12 +215,12 @@ inline BArrayVector_const<Cell_Type,Data_Type>::operator std::vector< Cell_Type 
         return Array->get_row_vec(i, false);
     else
         return Array->get_col_vec(i, false);
-        
+
 }
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayVector_const<Cell_Type,Data_Type>::operator==(const Cell_Type & val) const {
-    
+
     if (dim == 0u)
     {
         for (size_t j = 0u; j < Array->ncol(); ++j)
@@ -252,7 +252,7 @@ inline bool BArrayVector_const<Cell_Type,Data_Type>::operator!=(const Cell_Type 
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayVector_const<Cell_Type,Data_Type>::operator<(const Cell_Type & val) const {
-    
+
     if (dim == 0u)
     {
         for (size_t j = 0u; j < Array->ncol(); ++j)
@@ -279,7 +279,7 @@ inline bool BArrayVector_const<Cell_Type,Data_Type>::operator<(const Cell_Type &
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayVector_const<Cell_Type,Data_Type>::operator<=(const Cell_Type & val) const {
-    
+
     if (dim == 0u)
     {
         for (size_t j = 0u; j < Array->ncol(); ++j)
@@ -313,7 +313,7 @@ inline bool BArrayVector_const<Cell_Type,Data_Type>::operator>(const Cell_Type &
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayVector_const<Cell_Type,Data_Type>::operator>=(const Cell_Type & val) const {
-    return !(this->operator<(val));    
-} 
+    return !(this->operator<(val));
+}
 
 #endif

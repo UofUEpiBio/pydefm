@@ -16,7 +16,7 @@ inline void pset_loop(
     const std::vector< std::vector< size_t > > & locations,
     const std::vector<geese::Node *> & node_offspring,
     const double * psetprobs
-) 
+)
 {
     // Retrieving the pset
     const auto & x = psets[n];
@@ -34,7 +34,7 @@ inline void pset_loop(
 
         // Setting the node
         const Node * n_off = node_offspring[o];
-        
+
         // In the case that the offspring is a leaf, then we need to
         // check whether the state makes sense.
         if (n_off->is_leaf())
@@ -51,7 +51,7 @@ inline void pset_loop(
                         break;
 
                     }
-                    
+
                 }
 
             }
@@ -59,7 +59,7 @@ inline void pset_loop(
             // Going out
             if (off_mult < 0)
                 break;
-    
+
             continue;
 
         }
@@ -92,7 +92,7 @@ inline void pset_loop(
             err;
 
         throw std::runtime_error(err);
-        
+
     }
 
     // Adding to the total probabilities
@@ -165,18 +165,18 @@ inline double Geese::likelihood(
             // Making sure parallelization makes sense
             if (psets.size() < 128)
                 ncores = 1u;
-            
+
             // Summation over all possible values of X
             const auto & node_offspring = node.offspring;
             std::vector< double > totprob_n(psets.size(), 0.0);
-            for (size_t n = 0u; n < psets.size(); ++n) 
+            for (size_t n = 0u; n < psets.size(); ++n)
             {
                 pset_loop(
                     n, s, nfunctions, node_id, array_id, totprob_n,
-                    par0, states, psets, locations, 
+                    par0, states, psets, locations,
                     node_offspring, psetsprobs_s
                 );
-            }            
+            }
 
             // Setting the probability at the node
             node.subtree_prob[s] = 0.0;

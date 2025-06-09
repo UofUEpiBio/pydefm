@@ -227,7 +227,7 @@ inline Geese::Geese(
 
 }
 
-inline Geese::Geese(const Geese & model_, bool copy_data) : 
+inline Geese::Geese(const Geese & model_, bool copy_data) :
     states(model_.states),
     n_zeros(model_.n_zeros),
     n_ones(model_.n_ones),
@@ -241,7 +241,7 @@ inline Geese::Geese(const Geese & model_, bool copy_data) :
     reduced_sequence(model_.reduced_sequence),
     initialized(model_.initialized) {
 
-    
+
     // Replicating -------------------------------------------------------------
     if (copy_data)
     {
@@ -259,7 +259,7 @@ inline Geese::Geese(const Geese & model_, bool copy_data) :
         }
 
     } else {
-        
+
         if (model_.rengine != nullptr)
         {
             rengine = model_.rengine;
@@ -292,7 +292,7 @@ inline Geese::Geese(const Geese & model_, bool copy_data) :
         // Clearing offspring
         this->nodes[i].offspring.clear();
 
-        // I cannot directly access the node since, if non existent, it will 
+        // I cannot directly access the node since, if non existent, it will
         // create an entry with it (alegedly).
         auto n = model_.nodes.find(i);
 
@@ -302,7 +302,7 @@ inline Geese::Geese(const Geese & model_, bool copy_data) :
     }
 
     return;
-  
+
 }
 
 // Constructor move
@@ -346,7 +346,7 @@ inline Geese::Geese(Geese && x) noexcept :
 
         model = x.model;
         delete_support = false;
-        
+
     }
 
     // Figuring out if model needs to be updated

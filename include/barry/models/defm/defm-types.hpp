@@ -6,16 +6,16 @@ typedef barry::BArrayDense<int, DEFMData> DEFMArray;
 
 /**
  * @brief Data class for DEFM arrays.
- * 
+ *
  * This holds information pointing to the data array, including information
  * regarding the number of observations, the time slices of the observation,
  * and the number of covariates in the data.
- * 
+ *
  */
 
 class DEFMData {
 public:
-    
+
     DEFMArray * array; // Pointer to the owner of this data
     const double * covariates; ///< Vector of covariates (complete vector)
     size_t obs_start;    ///< Index of the observation in the data.
@@ -24,9 +24,9 @@ public:
     std::vector< size_t > covar_sort; /// Value where the sorting of the covariates is stored.
     std::vector< size_t > covar_used; /// Vector indicating which covariates are included in the model
     bool column_major;
-    
+
     DEFMData() {};
-    
+
     /**
      * @brief Constructor
      * @param covariates_ Pointer to the attribute data.
@@ -42,21 +42,21 @@ public:
         size_t X_nrow_,
         bool column_major_
     ) : array(array_), covariates(covariates_), obs_start(obs_start_),
-    X_ncol(X_ncol_), X_nrow(X_nrow_), column_major(column_major_) {}; 
+    X_ncol(X_ncol_), X_nrow(X_nrow_), column_major(column_major_) {};
 
     /**
      * @brief Access to the row (i) colum (j) data
-     * 
-     * @param i 
-     * @param j 
-     * @return double 
+     *
+     * @param i
+     * @param j
+     * @return double
      */
     double operator()(size_t i, size_t j) const;
     double at(size_t i, size_t j) const;
     size_t ncol() const;
     size_t nrow() const;
     void print() const;
-    
+
     ~DEFMData() {};
 
 };
@@ -70,22 +70,22 @@ public:
     std::vector< double > numbers;
     std::vector< bool >   logical;
     bool is_motif; ///< If false, then is a logit intercept.
-    
+
     DEFMCounterData() : indices(0u), numbers(0u), logical(0u), is_motif(true) {};
     DEFMCounterData(
         const std::vector< size_t > indices_,
         const std::vector< double > numbers_,
         const std::vector< bool > logical_,
         bool is_motif_ = true
-    ): indices(indices_), numbers(numbers_), 
+    ): indices(indices_), numbers(numbers_),
         logical(logical_), is_motif(is_motif_) {};
 
     size_t idx(size_t i) const {return indices[i];};
     double num(size_t i) const {return numbers[i];};
     bool is_true(size_t i) const {return logical[i];};
-    
+
     ~DEFMCounterData() {};
-    
+
 };
 
 class DEFMRuleData {
@@ -144,7 +144,7 @@ inline void DEFMData::print() const {
         for (size_t j = 0u; j < X_ncol; ++j)
             printf_barry("% 5.2f, ", operator()(i, j));
         printf_barry("\n");
-        
+
     }
 
 }
@@ -162,21 +162,21 @@ public:
     size_t pos;
     size_t lb;
     size_t ub;
-    
+
     DEFMRuleDynData(
         const std::vector< double > * counts_,
         size_t pos_,
         size_t lb_,
         size_t ub_
         ) : counts(counts_), pos(pos_), lb(lb_), ub(ub_) {};
-    
+
     ~DEFMRuleDynData() {};
 
     const double operator()() const
     {
         return (*counts)[pos];
     }
-    
+
 };
 
 /**

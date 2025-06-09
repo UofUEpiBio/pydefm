@@ -4,10 +4,10 @@
 #include "formula.hpp"
 
 /**
- * @ingroup counting 
+ * @ingroup counting
  * @details Details on the available counters for `DEFMworkData` can be found in
  * the \ref counters-network section.
- * 
+ *
  */
 ///@{
 
@@ -19,10 +19,10 @@
 
 /**
  * @brief Data for the counters
- * 
+ *
  * @details This class is used to store the data for the counters. It is
  * used by the `Counters` class.
- * 
+ *
  */
 #define MAKE_DEFM_HASHER(hasher,a,cov)                                  \
     barry::Hasher_fun_type<DEFMArray, DEFMCounterData>                  \
@@ -82,7 +82,7 @@ barry::Rule_fun_type<DEFMArray, DEFMRuleDynData> a = \
 // -----------------------------------------------------------------------------
 /**
  * @brief Prevalence of ones
- * 
+ *
  * @param counters Pointer ot a vector of counters
  * @param covar_index If >= than 0, then the interaction
  */
@@ -96,7 +96,7 @@ inline void counter_ones(
 
     // Weighted by a feature of the array
     if (covar_index >= 0)
-    {   
+    {
 
         MAKE_DEFM_HASHER(hasher, array, covar_index)
 
@@ -121,8 +121,8 @@ inline void counter_ones(
 
         counters->add_counter(
             counter_tmp, nullptr, hasher,
-            DEFMCounterData({static_cast<size_t>(covar_index)}, {}, {}, true), 
-            "Num. of ones x " + vname, 
+            DEFMCounterData({static_cast<size_t>(covar_index)}, {}, {}, true),
+            "Num. of ones x " + vname,
             "Overall number of ones"
         );
 
@@ -132,7 +132,7 @@ inline void counter_ones(
 
         DEFM_COUNTER_LAMBDA(count_ones)
         {
-            
+
             // Only count the current
             if (i != (Array.nrow() - 1))
                 return 0.0;
@@ -146,7 +146,7 @@ inline void counter_ones(
         counters->add_counter(
             count_ones, nullptr, nullptr,
             dat, // DEFMCounterData(),
-            "Num. of ones", 
+            "Num. of ones",
             "Overall number of ones"
         );
     }
@@ -162,7 +162,7 @@ inline void counter_ones(
  * @param counters A pointer to the DEFMCounters object.
  * @param n_y The number of response variables.
  * @param which A vector of indices indicating which response variables to use. If empty, all response variables are used.
- * @param covar_index The index of the covariate to use as the intercept. 
+ * @param covar_index The index of the covariate to use as the intercept.
  * @param vname The name of the variable to use as the intercept. If empty, the intercept is set to zero.
  * @param x_names A pointer to a vector of strings containing the names of the covariates.
  * @param y_names A pointer to a vector of strings containing the names of the response variables.
@@ -213,8 +213,8 @@ inline void counter_logit_intercept(
 
             counters->add_counter(
                 tmp_counter, nullptr, nullptr,
-                DEFMCounterData({i}, {}, {}, false), 
-                "Logit intercept " + vname, 
+                DEFMCounterData({i}, {}, {}, false),
+                "Logit intercept " + vname,
                 "Equal to one if the outcome " + vname + " is one. Equivalent to the logistic regression intercept."
             );
 
@@ -256,8 +256,8 @@ inline void counter_logit_intercept(
             if (hasher_added)
                 counters->add_counter(
                     tmp_counter, nullptr, nullptr,
-                    DEFMCounterData({i, static_cast<size_t>(covar_index)}, {}, {}, false), 
-                    "Logit intercept " + yname + " x " + vname, 
+                    DEFMCounterData({i, static_cast<size_t>(covar_index)}, {}, {}, false),
+                    "Logit intercept " + yname + " x " + vname,
                     "Equal to one if the outcome " + yname + " is one. Equivalent to the logistic regression intercept."
                 );
             else {
@@ -266,8 +266,8 @@ inline void counter_logit_intercept(
 
                 counters->add_counter(
                     tmp_counter, nullptr, hasher,
-                    DEFMCounterData({i, static_cast<size_t>(covar_index)}, {}, {}, false), 
-                    "Logit intercept " + yname + " x " + vname, 
+                    DEFMCounterData({i, static_cast<size_t>(covar_index)}, {}, {}, false),
+                    "Logit intercept " + yname + " x " + vname,
                     "Equal to one if the outcome " + yname + " is one. Equivalent to the logistic regression intercept."
                 );
 
@@ -276,13 +276,13 @@ inline void counter_logit_intercept(
         }
 
     }
-    
+
 
 }
 
 /**
  * @brief Prevalence of ones
- * 
+ *
  * @param counters Pointer ot a vector of counters
  * @param covar_index If >= than 0, then the interaction
  */
@@ -335,20 +335,20 @@ inline void counter_transition(
             if (sgn[k] && (cellv != 1))
                 return 0.0;
         }
-            
+
         // If nothing happens, then is one or the covaridx
         return (covaridx < 1000) ? Array.D()(Array.nrow() - 1u, covaridx) : 1.0;
-        
+
     };
 
     DEFM_COUNTER_LAMBDA(count_ones)
     {
-        
+
         auto dat = data.indices;
         auto sgn = data.logical;
         int covaridx = dat[dat.size() - 1u];
 
-        // Checking if the observation is in the stat. We 
+        // Checking if the observation is in the stat. We
         const auto & array = Array.get_data();
         size_t loc = i + j * Array.nrow();
         size_t n_cells = dat.size() - 1u;
@@ -370,13 +370,13 @@ inline void counter_transition(
 
             if ((sgn[e] && (array[dat[e]] == 1)) || (!sgn[e] && (array[dat[e]] == 0)))
                 n_now++;
-            
+
         }
 
         // If i in array still false, then no change
         if (!i_in_array)
             return 0.0;
-        
+
         size_t n_prev = n_now;
         if (baseline_value)
             n_prev--;
@@ -386,14 +386,14 @@ inline void counter_transition(
         // Computing stats
         if (covaridx < 1000)
         {
-            
+
             double val = Array.D()(Array.nrow() - 1u, covaridx);
             double value_now  = n_now == n_cells ?  val : 0.0;
             double value_prev = n_prev == n_cells ? val : 0.0;
 
             return value_now - value_prev;
 
-        } 
+        }
         else
         {
 
@@ -424,12 +424,12 @@ inline void counter_transition(
         size_t c = std::floor(coords[d] / (m_order + 1u));
         size_t r = coords[d] - c * (m_order + 1u);
         motif(r, c) = signs[d] ? 1 : -1;
-        
+
     }
 
     // Checking if any prior to the event
     bool any_before_event = false;
-    
+
     for (size_t i = 0u; i < m_order; ++i)
     {
         for (size_t j = 0u; j < n_y; ++j)
@@ -442,7 +442,7 @@ inline void counter_transition(
 
         }
     }
-    
+
     #ifdef BARRY_WITH_LATEX
         name += "$";
     #endif
@@ -581,8 +581,8 @@ inline void counter_transition(
 
         counters->add_counter(
             count_ones, count_init, hasher,
-            DEFMCounterData(coords, {}, signs, coords.size() > 1u ? true : false), 
-            name + " x " + vname, 
+            DEFMCounterData(coords, {}, signs, coords.size() > 1u ? true : false),
+            name + " x " + vname,
             "Motif weighted by single attribute"
         );
 
@@ -590,13 +590,13 @@ inline void counter_transition(
 
         counters->add_counter(
             count_ones, count_init, nullptr,
-            DEFMCounterData(coords, {}, signs, coords.size() > 1u ? true : false), 
-            name, 
+            DEFMCounterData(coords, {}, signs, coords.size() > 1u ? true : false),
+            name,
             "Motif"
         );
 
     }
-    
+
 
     return;
 
@@ -604,7 +604,7 @@ inline void counter_transition(
 
 /**
  * @brief Prevalence of ones
- * 
+ *
  * @param counters Pointer ot a vector of counters
  * @param covar_index If >= than 0, then the interaction
  */
@@ -671,7 +671,7 @@ inline void counter_transition_formula(
         );
 
     }
-    else 
+    else
     {
 
         counter_transition(
@@ -686,7 +686,7 @@ inline void counter_transition_formula(
 
 /**
  * @brief Prevalence of ones
- * 
+ *
  * @param counters Pointer ot a vector of counters
  * @param covar_index If >= than 0, then the interaction
  */
@@ -718,7 +718,7 @@ inline void counter_fixed_effect(
 
     counters->add_counter(
         count_tmp, count_init, hasher,
-        DEFMCounterData({static_cast<size_t>(covar_index)}, {k}, {}), 
+        DEFMCounterData({static_cast<size_t>(covar_index)}, {k}, {}),
         "Fixed effect feature (" + vname + ")^" + std::to_string(k)
     );
 
@@ -737,32 +737,32 @@ inline void rules_markov_fixed(
     DEFMRules * rules,
     size_t markov_order
     ) {
-    
+
     DEFM_RULE_LAMBDA(no_self_tie) {
         return i >= data.idx(0u);
     };
-    
+
     rules->add_rule(
         no_self_tie,
         DEFMRuleData({},{markov_order}),
         std::string("Markov model of order ") + std::to_string(markov_order),
         std::string("Blocks the first morder cells of the array.")
         );
-    
+
     return;
 }
 
 /**
  * @brief Blocks switching a one to zero.
- * 
- * @param rules 
+ *
+ * @param rules
  * @param ids Ids of the variables that will follow this rule.
  */
 inline void rules_dont_become_zero(
     DEFMSupport * support,
     std::vector<size_t> ids
     ) {
-    
+
     DEFM_RULE_LAMBDA(rule) {
 
         if (!data.init)
@@ -797,14 +797,14 @@ inline void rules_dont_become_zero(
         return (Array(i - 1, j) != 1) || (Array(i, j) != 1);
 
     };
-    
+
     support->get_rules()->add_rule(
         rule,
         DEFMRuleData({}, {ids}),
         std::string("Ones can't become zero"),
         std::string("Blocks cells that have became equal to one.")
         );
-    
+
     return;
 }
 
@@ -814,7 +814,7 @@ inline void rules_dont_become_zero(
  * @param pos Position of the focal statistic.
  * @param lb Lower bound
  * @param ub Upper bound
- * @details 
+ * @details
  * @return (void) adds a rule limiting the support of the model.
  */
 inline void rule_constrain_support(
@@ -824,7 +824,7 @@ inline void rule_constrain_support(
     double ub
 )
 {
-  
+
     DEFM_RULEDYN_LAMBDA(tmp_rule)
     {
 
@@ -834,10 +834,10 @@ inline void rule_constrain_support(
             return false;
         else
             return true;
-      
+
     };
 
-    
+
     support->get_rules_dyn()->add_rule(
         tmp_rule,
         DEFMRuleDynData(
@@ -847,14 +847,14 @@ inline void rule_constrain_support(
         support->get_counters()->get_names()[pos] +
             "' within [" + std::to_string(lb) + ", " +
             std::to_string(ub) + std::string("]"),
-        std::string("When the support is ennumerated, only states where the statistic '") + 
+        std::string("When the support is ennumerated, only states where the statistic '") +
             support->get_counters()->get_names()[pos] +
             std::to_string(pos) + "' falls within [" + std::to_string(lb) + ", " +
             std::to_string(ub) + "] are included."
     );
-    
+
     return;
-  
+
 }
 
 

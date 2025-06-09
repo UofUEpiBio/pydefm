@@ -66,7 +66,7 @@ m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
 obj.init()
-obj.print() 
+obj.print()
 ```
 
     Num. of Arrays       : 6

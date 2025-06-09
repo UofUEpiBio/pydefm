@@ -77,19 +77,19 @@ inline std::vector< std::vector<double> > Geese::predict_exhaust_backend(
             PhyloRuleData()
             );
     pset.calc();
-    
+
     // Making space for the expected values
     std::vector< double > expected(nnodes() * nfuns(), 0.0);
-    
-    // This vector says whether the probability has to be included in 
+
+    // This vector says whether the probability has to be included in
     // the final likelihood or not.
     for (size_t p = 0u; p < pset.size(); ++p)
     {
-        
+
         // ith state
         const PhyloArray * s = &pset[p];
-        
-        // Computing the likelihood of the state s        
+
+        // Computing the likelihood of the state s
         double current_prob = 1.0;
         for (auto & o: preorder)
         {
@@ -111,7 +111,7 @@ inline std::vector< std::vector<double> > Geese::predict_exhaust_backend(
                     current_prob *= par_state[f] ? par_root[f] : (1.0 - par_root[f]);
 
             }
-        
+
             // Generating a copy of the observed array
             // (data is copied so that we can chage the state of the parent)
             PhyloArray tmparray(n.array, true);
@@ -123,7 +123,7 @@ inline std::vector< std::vector<double> > Geese::predict_exhaust_backend(
             // Updating offspring annotations
             int loc = 0;
             for (auto & off : n.offspring) {
-                
+
                 for (size_t f = 0u; f < nfuns(); ++f)
                 {
 
@@ -138,19 +138,19 @@ inline std::vector< std::vector<double> > Geese::predict_exhaust_backend(
                 ++loc;
 
             }
-            
+
             // Computing the likelihood
             current_prob *= model->likelihood(par_terms, tmparray, -1, false);
 
         }
             // this->update_annotations(n.second.id, s->get_col_vec(n.second.ord));
-        
+
         // Adding to the overall probability
         for (auto & n: nodes)
             for (size_t j = 0u; j < nfuns(); ++j)
                 expected[n.second.ord +  j * nnodes()] += s->operator()(j, n.second.ord) * current_prob/
                     baseline_likelihood;
-        
+
     }
 
     // Coercing expected to a list vector

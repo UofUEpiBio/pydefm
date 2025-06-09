@@ -21,7 +21,7 @@ namespace geese {
 
   #include "geese/flock-bones.hpp"
   #include "geese/flock-meat.hpp"
-  
+
   #include "geese/counters.hpp"
 
 }

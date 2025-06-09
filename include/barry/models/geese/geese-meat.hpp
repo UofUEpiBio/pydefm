@@ -65,7 +65,7 @@ inline void Geese::init_node(Node & n)
         n.narray.resize(states.size());
 
     }
-    
+
     // Here we have an issue: Some transitions may not be right
     // under the dynamic rules. So not all states can be valid.
     // The arrays and narrays need to be updated once the model
@@ -99,7 +99,7 @@ inline void Geese::init_node(Node & n)
                 " cannot be added to the model with error:\n" + err +
                 "\n. This is likely due to a dynamic rule. " +
                 "The array to be added was in the following state:";
-                
+
             std::string state_str = "";
             for (const auto & ss : states[s])
                 state_str += std::to_string(ss) + " ";
@@ -107,7 +107,7 @@ inline void Geese::init_node(Node & n)
             err += state_str + "\n";
 
             throw std::runtime_error(err);
-            
+
         }
 
     }
@@ -148,7 +148,7 @@ inline void Geese::init(size_t bar_width) {
 
     // Checking rseed, this is relevant when dealing with a flock. In the case of
     // flock, both model and rengine are shared.
-    if (this->model->get_rengine() == nullptr) 
+    if (this->model->get_rengine() == nullptr)
         this->model->set_rengine(this->rengine, false);
 
     // All combinations of the function
@@ -164,7 +164,7 @@ inline void Geese::init(size_t bar_width) {
     {
 
         states.emplace_back(std::vector< bool >(nfunctions, false));
-        
+
         for (auto j = 0u; j < nfunctions; ++j)
         {
 
@@ -192,10 +192,10 @@ inline void Geese::init(size_t bar_width) {
 
             // Only parents get a node
             if (!iter.second.is_leaf())
-                this->init_node(iter.second); 
-                
+                this->init_node(iter.second);
+
             prog_bar.next();
-            
+
         }
 
         prog_bar.end();
@@ -211,8 +211,8 @@ inline void Geese::init(size_t bar_width) {
 
             // Only parents get a node
             if (!iter.second.is_leaf())
-                this->init_node(iter.second); 
-            
+                this->init_node(iter.second);
+
         }
 
     }
@@ -243,13 +243,13 @@ inline void Geese::init(size_t bar_width) {
 
                 sup_array[a].get_col_vec(&tmpstate, o, false);
                 pset_loc[s][a].push_back(map_to_state_id[tmpstate]);
-                
-            }   
+
+            }
 
         }
 
     }
-    
+
     // So that others now know it was initialized
     initialized = true;
 
@@ -259,7 +259,7 @@ inline void Geese::init(size_t bar_width) {
 
 inline void Geese::inherit_support(const Geese & model_, bool delete_support_)
 {
-    
+
     if (this->model != nullptr)
         throw std::logic_error(
             "There is already a -model- in this Geese. Cannot set a -model- after one is present."
@@ -278,9 +278,9 @@ inline void Geese::inherit_support(const Geese & model_, bool delete_support_)
         this->delete_rengine = false;
 
     }
-    
+
     this->rengine = model_.rengine;
-    
+
     return;
 
 }
@@ -304,7 +304,7 @@ inline void Geese::update_annotations(
     // parent node
     nodes[nodeid].annotations = newann;
 
-    // This only makes sense (for now) if it is a tip 
+    // This only makes sense (for now) if it is a tip
     if (!nodes[nodeid].is_leaf())
         return;
 
@@ -389,11 +389,11 @@ inline void Geese::calc_reduced_sequence()
         {
 
             // Checking, am I including any of my offspring?
-            for (auto& o : n.offspring) 
+            for (auto& o : n.offspring)
 
                 if (includeit[o->ord])
                 {
-                    
+
                     includeit[n.ord] = true;
                     reduced_sequence.push_back(i);
                     break;
@@ -414,7 +414,7 @@ inline std::vector< double > Geese::get_probabilities() const
     res.reserve(
         this->states.size() * nodes.size()
         );
-    
+
     for (auto& i : sequence)
     {
 
@@ -424,7 +424,7 @@ inline std::vector< double > Geese::get_probabilities() const
     }
 
     return res;
-    
+
 }
 
 inline size_t Geese::nfuns() const noexcept
@@ -467,7 +467,7 @@ inline size_t Geese::support_size() const noexcept
         return 0u;
 
     return model->support_size();
-    
+
 }
 
 inline std::vector< size_t > Geese::nannotations() const noexcept
@@ -509,7 +509,7 @@ inline size_t Geese::parse_polytomies(
 
             if (verb)
                 printf_barry("Node id: %li has polytomy size %li\n", n.second.id, noff);
-                
+
         }
 
         if (noff > largest)
@@ -679,17 +679,17 @@ inline void Geese::print_nodes() const
     printf_barry("GEESE\nINFO ABOUT NODES\n");
 
     for (const auto & n: nodes)
-    {            
+    {
         printf_barry("% 4li - Id: %li -- ", n.second.ord, n.second.id);
 
         // Node type
         printf_barry(
             "node type: %s -- ",
-            n.second.is_leaf() ? 
+            n.second.is_leaf() ?
                 std::string("leaf").c_str() :
                 std::string("internal").c_str()
             );
-        
+
         // Event type
         printf_barry(
             "event type: %s -- ",
@@ -792,13 +792,13 @@ inline std::vector< size_t > Geese::get_annotated_nodes() const {
 }
 
 inline std::vector< size_t > Geese::get_annotations() const {
-    
+
         // Makeing space for the annotations
         std::vector< size_t > ann(this->nfuns() * this->nnodes(), 9u);
         size_t nrows = this->nnodes();
         for (auto & n : nodes)
         {
-    
+
             // Getting the location
             size_t row = n.second.ord;
 
@@ -812,11 +812,11 @@ inline std::vector< size_t > Geese::get_annotations() const {
                 }
             }
 
-    
+
         }
-    
+
         return ann;
-    
+
 }
 
 

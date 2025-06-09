@@ -16,7 +16,7 @@ private:
     int last_loc;     ///< Last location of the bar
     int cur_loc;      ///< Last location of the bar
     int i;            ///< Current iteration step
-    
+
 public:
 
     Progress(int n_, int width_);

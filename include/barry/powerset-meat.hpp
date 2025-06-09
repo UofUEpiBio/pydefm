@@ -18,7 +18,7 @@ inline PowerSet<Array_Type,Data_Rule_Type>::~PowerSet() {
 template <typename Array_Type, typename Data_Rule_Type>
 inline void PowerSet<Array_Type,Data_Rule_Type>::init_support()
 {
-    
+
     // Computing the locations
     coordinates_free.clear();
     coordinates_locked.clear();
@@ -26,7 +26,7 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::init_support()
 
     n_free   = coordinates_free.size() / 2u;
     n_locked = coordinates_locked.size() / 2u;
-    
+
     // Computing initial statistics
     if (EmptyArray.nnozero() > 0u)
     {
@@ -34,7 +34,7 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::init_support()
         if (EmptyArray.is_dense())
         {
 
-            for (size_t i = 0u; i < n_free; ++i) 
+            for (size_t i = 0u; i < n_free; ++i)
                 EmptyArray(
                     coordinates_free[i * 2u],
                     coordinates_free[i * 2u + 1u]
@@ -44,7 +44,7 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::init_support()
         else
         {
 
-            for (size_t i = 0u; i < n_free; ++i) 
+            for (size_t i = 0u; i < n_free; ++i)
                 EmptyArray.rm_cell(
                     coordinates_free[i * 2u],
                     coordinates_free[i * 2u + 1u],
@@ -54,18 +54,18 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::init_support()
 
 
         }
-            
+
     }
 
     // EmptyArray.clear(true);
     // EmptyArray.reserve();
-    
+
     // Resizing support
-    data.reserve(pow(2.0, n_free)); 
+    data.reserve(pow(2.0, n_free));
 
     // Adding the empty array to the set
     data.push_back(EmptyArray);
-    
+
     return;
 }
 
@@ -74,14 +74,14 @@ inline void PowerSet<Array_Type, Data_Rule_Type>::calc_backend_sparse(
     size_t pos
 )
 {
-    
+
     // Did we reached the end??
     if (pos >= n_free)
         return;
-            
+
     // We will pass it to the next step, if the iteration makes sense.
     calc_backend_sparse(pos + 1u);
-        
+
     // Toggle the cell (we will toggle it back after calling the counter)
     EmptyArray.insert_cell(
         coordinates_free[pos * 2u],
@@ -98,20 +98,20 @@ inline void PowerSet<Array_Type, Data_Rule_Type>::calc_backend_sparse(
         BARRY_USER_INTERRUPT
     }
     #endif
-    
+
     // Again, we only pass it to the next level iff the next level is not
     // passed the last step.
     calc_backend_sparse(pos + 1u);
-    
+
     // We need to restore the state of the cell
     EmptyArray.rm_cell(
         coordinates_free[pos * 2u],
         coordinates_free[pos * 2u + 1u],
         false, false
-        );  
-    
+        );
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Rule_Type>
@@ -119,33 +119,33 @@ inline void PowerSet<Array_Type, Data_Rule_Type>::calc_backend_dense(
     size_t pos
 )
 {
-    
+
     // Did we reached the end??
     if (pos >= n_free)
         return;
-            
+
     // We will pass it to the next step, if the iteration makes sense.
     calc_backend_dense(pos + 1u);
-        
+
     // Toggle the cell (we will toggle it back after calling the counter)
     EmptyArray(coordinates_free[pos * 2u], coordinates_free[pos * 2u + 1u]) = 1;
 
     data.push_back(EmptyArray);
-    
+
     // Again, we only pass it to the next level iff the next level is not
     // passed the last step.
     calc_backend_dense(pos + 1u);
-    
+
     // We need to restore the state of the cell
     EmptyArray(coordinates_free[pos * 2u], coordinates_free[pos * 2u + 1u]) = 0;
-    
+
     return;
-    
+
 }
 
 
 /***
-  * Function to generate the powerset of the 
+  * Function to generate the powerset of the
   */
 template <typename Array_Type, typename Data_Rule_Type>
 inline void PowerSet<Array_Type, Data_Rule_Type>::calc() {
@@ -160,7 +160,7 @@ inline void PowerSet<Array_Type, Data_Rule_Type>::calc() {
         calc_backend_sparse(0u);
 
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Rule_Type>
@@ -168,10 +168,10 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::reset(
         size_t N_,
         size_t M_
 ) {
-    
+
     data.empty();
     N = N_, M = M_;
-    
+
     return;
 
 }
@@ -180,7 +180,7 @@ template <typename Array_Type, typename Data_Rule_Type>
 inline void PowerSet<Array_Type,Data_Rule_Type>::add_rule(
         Rule<Array_Type, Data_Rule_Type> rule
 ) {
-    
+
     rules->add_rule(rule);
     return;
 }
@@ -190,14 +190,14 @@ inline void PowerSet<Array_Type,Data_Rule_Type>::add_rule(
         Rule_fun_type<Array_Type,Data_Rule_Type> rule_fun_,
         Data_Rule_Type data_
 ) {
-    
+
     rules->add_rule(
         rule_fun_,
         data_
     );
-    
+
     return;
-    
+
 }
 
 #endif

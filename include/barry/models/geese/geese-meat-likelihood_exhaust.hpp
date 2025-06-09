@@ -2,7 +2,7 @@
 #ifndef GEESE_MEAT_LIKELIHOOD_EXHAUST_HPP
 #define GEESE_MEAT_LIKELIHOOD_EXHAUST_HPP 1
 // #include "../../barry.hpp"
-// #include "geese-bones.hpp" 
+// #include "geese-bones.hpp"
 
 inline double Geese::likelihood_exhaust(
     const std::vector< double > & par
@@ -33,7 +33,7 @@ inline double Geese::likelihood_exhaust(
 
         for (size_t i = 0u; i < nfuns(); ++i)
             base(i, n.second.ord) = n.second.annotations[i];
-            
+
     }
 
     PhyloPowerSet pset(base);//this->nfuns(), this->nnodes());
@@ -48,15 +48,15 @@ inline double Geese::likelihood_exhaust(
     std::reverse(preorder.begin(), preorder.end());
 
     double totprob = 0.0;
-    
-    // This vector says whether the probability has to be included in 
+
+    // This vector says whether the probability has to be included in
     // the final likelihood or not.
     for (size_t p = 0u; p < pset.size(); ++p)
     {
-        
+
         // ith state
         const PhyloArray * s = &pset[p];
-        
+
         // Following the sequence
         double prob = 1.0;
         std::vector< size_t > tmpstates(this->nfuns());
@@ -71,7 +71,7 @@ inline double Geese::likelihood_exhaust(
 
             // Root node first
             if (node->parent == nullptr)
-            {               
+            {
                 // Since it is the root, the first probability is computed using
                 // the root only
                 for (auto k = 0u; k < this->nfuns(); ++k)

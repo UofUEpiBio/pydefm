@@ -25,13 +25,13 @@
 
 /**
  * @brief Extension of a simple counter.
- * 
+ *
  * It allows specifying extra arguments, in particular, the corresponding
  * sets of rows to which this statistic may be relevant. This could be important
  * in the case of, for example, counting correlation type statistics between
  * function 1 and 2, and between function 1 and 3.
- * 
- * 
+ *
+ *
  */
 #define PHYLO_RULE_LAMBDA(a) barry::Rule_fun_type<PhyloArray, PhyloRuleData> a = \
     [](const PhyloArray & Array, size_t i, size_t j, PhyloRuleData & data)
@@ -44,7 +44,7 @@
 
 #define PHYLO_CHECK_MISSING() if (Array.D_ptr() == nullptr) \
     throw std::logic_error("The array data is nullptr."); \
-    
+
 inline std::string get_last_name(size_t d) {return ((d == 1u)? " at duplication" : ((d == 0u)? " at speciation" : ""));}
 
 /**
@@ -63,12 +63,12 @@ inline void counter_overall_gains(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
         PHYLO_CHECK_MISSING();
-        
+
         return 0.0;
 
     };
@@ -77,11 +77,11 @@ inline void counter_overall_gains(
     {
         IF_NOTMATCHES()
             return 0.0;
-      
+
         return Array.D_ptr()->states[i] ? 0.0 : 1.0;
-      
+
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
@@ -89,7 +89,7 @@ inline void counter_overall_gains(
     );
 
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ inline void counter_gains(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
@@ -121,7 +121,7 @@ inline void counter_gains(
             if (Array(k, o) == 1u)
                 ngains += 1.0;
         }
-        
+
         return ngains;
 
     };
@@ -135,20 +135,20 @@ inline void counter_gains(
 
         IF_MATCHES()
             return (i == data[1u]) ? 1.0 : 0.0;
-        
+
         return 0.0;
 
     };
-    
+
     for (auto& i : nfun)
         counters->add_counter(
             tmp_count, tmp_init, nullptr,
             PhyloCounterData({duplication, i}),
             "Gains " + std::to_string(i) + get_last_name(duplication)
         );
-    
+
     return;
-  
+
 }
 
 
@@ -163,7 +163,7 @@ inline void counter_gains_k_offspring(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
@@ -204,13 +204,13 @@ inline void counter_gains_k_offspring(
         else if (diff == 0)
         {
             return 1.0;
-        } else 
+        } else
             // (c) Otherwise, nothing happens
             return 0.0;
-      
+
 
     };
-    
+
     for (auto& i : nfun)
         counters->add_counter(
             tmp_count, tmp_init, nullptr,
@@ -218,9 +218,9 @@ inline void counter_gains_k_offspring(
             std::to_string(k) + " genes gain " + std::to_string(i) +
                 get_last_name(duplication)
         );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -233,10 +233,10 @@ inline void counter_genes_changing(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
-        
+
         PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
@@ -247,14 +247,14 @@ inline void counter_genes_changing(
         for (auto s : Array.D_ptr()->states)
         {
 
-            if (s) 
+            if (s)
                 // Yup, we are loosing a function, so break
                 return static_cast<double>(Array.ncol());
-            
+
         }
 
         return 0.0;
-      
+
 
     };
 
@@ -272,25 +272,25 @@ inline void counter_genes_changing(
             // Nah, this gene was already different.
             if ((k != i) && (Array.D_ptr()->states[k] != (Array(k, j, false) == 1u)))
                 return 0.0;
-            
+
 
         }
 
-        // Nope, this gene is now matching its parent, so we need to 
+        // Nope, this gene is now matching its parent, so we need to
         // take it out from the count of genes that have changed.
         return Array.D_ptr()->states[i] ? -1.0 : 1.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Num. of genes changing" + get_last_name(duplication)
     );
 
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -304,10 +304,10 @@ inline void counter_preserve_pseudogene(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
-        
+
         PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
@@ -320,7 +320,7 @@ inline void counter_preserve_pseudogene(
 
         double n = static_cast<double>(Array.ncol());
         return n * (n - 1.0) / 2.0;
-      
+
 
     };
 
@@ -359,18 +359,18 @@ inline void counter_preserve_pseudogene(
         return res;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
-        "Preserve pseudo gene (" + 
+        "Preserve pseudo gene (" +
         std::to_string(nfunA) + ", " +
         std::to_string(nfunB) + ")" + get_last_name(duplication)
     );
 
-    
+
     return;
-  
+
 }
 
 
@@ -384,10 +384,10 @@ inline void counter_prop_genes_changing(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
-        
+
         PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
@@ -400,9 +400,9 @@ inline void counter_prop_genes_changing(
             if (s)
                 return 1.0;
         }
-        
+
         return 0.0;
-      
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_count)
@@ -411,7 +411,7 @@ inline void counter_prop_genes_changing(
         // Checking the type of event
         IF_NOTMATCHES()
             return 0.0;
-        
+
         // Setup
         bool j_diverges = false;
         const std::vector< bool > & par_state = Array.D_ptr()->states;
@@ -465,16 +465,16 @@ inline void counter_prop_genes_changing(
             return -1.0/Array.ncol();
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Proportion of genes changing" + get_last_name(duplication)
     );
 
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -486,7 +486,7 @@ inline void counter_overall_loss(
     size_t duplication = Geese::etype_default
     )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -495,17 +495,17 @@ inline void counter_overall_loss(
 
         IF_MATCHES()
             return -1.0;
-        else 
+        else
             return 0.0;
-        
+
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
         IF_NOTMATCHES()
             return 0.0;
-        
+
         double res = 0.0;
         for (auto s : Array.D_ptr()->states)
             if (s)
@@ -514,13 +514,13 @@ inline void counter_overall_loss(
         return res * static_cast<double>(Array.ncol());
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Overall loses" + get_last_name(duplication)
     );
-    
+
     return;
 
 }
@@ -540,7 +540,7 @@ inline void counter_maxfuns(
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
-        PHYLO_CHECK_MISSING();    
+        PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
             return 0.0;
@@ -549,11 +549,11 @@ inline void counter_maxfuns(
         // bound is zero
         if (data[1u] == 0)
             return static_cast<double>(Array.ncol());
-        
+
         return 0.0;
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -562,7 +562,7 @@ inline void counter_maxfuns(
 
         int count = Array.colsum(j);
         int ub    = data[2u];
-        
+
         // It now matches
         if (count == static_cast<int>(data[1u]))
             return 1.0;
@@ -582,11 +582,11 @@ inline void counter_maxfuns(
         "Genes with [" + std::to_string(lb) + ", " + std::to_string(ub) +
             "] funs" + get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
-  
+
 // -----------------------------------------------------------------------------
 /**
  * @brief Total count of losses for an specific function.
@@ -597,7 +597,7 @@ inline void counter_loss(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -606,11 +606,11 @@ inline void counter_loss(
 
         if (!Array.D_ptr()->states[i])
             return 0.0;
-        
+
         return (i == data[1u]) ? -1.0 : 0.0;
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
@@ -618,25 +618,25 @@ inline void counter_loss(
 
         IF_NOTMATCHES()
             return 0.0;
-        
+
         auto f = data[1u];
 
         if (!Array.D_ptr()->states[f])
             return 0.0;
-        
+
         return static_cast<double>(Array.ncol());
 
     };
-    
+
     for (auto& i : nfun)
         counters->add_counter(
             tmp_count, tmp_init, nullptr,
             PhyloCounterData({duplication, i}),
             "Loss " + std::to_string(i) + get_last_name(duplication)
         );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -648,7 +648,7 @@ inline void counter_overall_changes(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -657,11 +657,11 @@ inline void counter_overall_changes(
 
         if (Array.D_ptr()->states[i])
             return -1.0;
-        else 
+        else
             return 1.0;
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
@@ -681,7 +681,7 @@ inline void counter_overall_changes(
 
         return counts;
 
-        
+
 
     };
 
@@ -690,10 +690,10 @@ inline void counter_overall_changes(
         PhyloCounterData({duplication}),
         "Overall changes" + get_last_name(duplication)
     );
-    
-    
+
+
     return;
-  
+
 }
 
 
@@ -709,7 +709,7 @@ inline void counter_subfun(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -719,50 +719,50 @@ inline void counter_subfun(
 
         auto funA = data[1u];
         auto funB = data[2u];
-        
+
         // Are we looking at either of the relevant functions?
         if ((funA != i) && (funB != i))
             return 0.0;
-        
+
         // Are A and B existant? if not, no change
         if (!Array.D_ptr()->states[funA] || !Array.D_ptr()->states[funB])
             return 0.0;
-        
+
         // Figuring out which is the first (reference) function
         size_t other = (i == funA)? funB : funA;
         double res = 0.0;
         // There are 4 cases: (first x second) x (had the second function)
         if (Array(other, j, false) == 1u)
-        { 
-          
+        {
+
             for (size_t off = 0u; off < Array.ncol(); ++off)
             {
-                
+
                 // Not on self
                 if (off == j)
                     continue;
-                
+
                 if ((Array(i, off, false) == 1u) && (Array(other, off, false) == 0u))
                     res -= 1.0;
-                
+
             }
-          
+
         } else {
-          
+
             for (size_t off = 0u; off < Array.ncol(); ++off)
             {
-              
+
                 // Not on self
                 if (off == j)
                     continue;
-                
+
                 if ((Array(i, off, false) == 0u) && (Array(other, off, false) == 1u))
                     res += 1.0;
-              
+
             }
-          
+
         }
-        
+
         return res;
 
     };
@@ -774,16 +774,16 @@ inline void counter_subfun(
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, nfunA, nfunB}),
         "Subfun between " + std::to_string(nfunA) + " and " +
             std::to_string(nfunB) + get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -798,7 +798,7 @@ inline void counter_cogain(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -807,11 +807,11 @@ inline void counter_cogain(
 
         auto d1 = data[1u];
         auto d2 = data[2u];
-      
+
         // Is the function in scope relevant?
         if ((i != d1) && (i != d2))
             return 0.0;
-        
+
         // None should have it
         if (!Array.D_ptr()->states[d1] && !Array.D_ptr()->states[d2])
         {
@@ -823,7 +823,7 @@ inline void counter_cogain(
             else
                 return 0.0;
 
-        } else 
+        } else
             return 0.0;
 
     };
@@ -834,16 +834,16 @@ inline void counter_cogain(
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, nfunA, nfunB}),
         "Co-gains " + std::to_string(nfunA) + " & " + std::to_string(nfunB) +
             get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -853,7 +853,7 @@ inline void counter_longest(
     size_t duplication = Geese::etype_default
     )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -867,7 +867,7 @@ inline void counter_longest(
         int nmutate_longest = 0;
 
         auto states  = Array.D_ptr()->states;
-        
+
         for (auto off = 0u; off < Array.ncol(); ++off)
         {
 
@@ -880,7 +880,7 @@ inline void counter_longest(
             {
                 if ((Array(f, off) == 1u) != states[f])
                 {
-                    
+
                     // If it happens that j != off and is not longest
                     // then return 0 (a not longest was mutating prev)
                     if (is_longest[off] && (off != j))
@@ -942,32 +942,32 @@ inline void counter_longest(
                 nmutate_prev++;
 
         }
-        
+
         // Just compute the change statistic directly
         return
             ( ((nmutate == 0) & (nmutate_longest > 0)) ? 1.0 : 0.0 ) +
             ( ((nmutate_prev == 0) & (nmutate_longest_prev > 0)) ? 1.0 : 0.0 );
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
         PHYLO_CHECK_MISSING();
-        
+
         if (Array.D_ptr()->blengths.size() != Array.ncol())
             throw std::logic_error(
                 "longest should be initialized with a vec of size Array.ncol()."
             );
-          
+
         // Finding the longest branch (or branches) --
         size_t longest_idx = 0u;
         double diff      = 0.0;
-        data.reserve(Array.ncol()); 
+        data.reserve(Array.ncol());
         data.push_back(0u);
         for (size_t ii = 1u; ii < Array.ncol(); ++ii)
         {
-            
+
             diff = Array.D_ptr()->blengths[longest_idx] - Array.D_ptr()->blengths[ii];
             if (diff > 0.0)
                 continue;
@@ -981,41 +981,41 @@ inline void counter_longest(
             }
             else if (diff == 0.0)
                 data.push_back(ii);
-            
+
         }
 
         data.shrink_to_fit();
-        
+
         if (data.size() == 0u)
             throw std::logic_error("The data on the longest branch has size 0.");
-        
+
         // Starting the counter, since all in zero, then this will be equal to
         // the number of functions in 1 x number of longest branches
         for (size_t ii = 0u; ii < Array.nrow(); ++ii)
         {
-            
+
             if (Array.D_ptr()->states[ii])
                 return (1.0 * static_cast<double>(data.size()));
 
         }
-        
+
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Longest branch mutates" + get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 //------------------------------------------------------------------------------
 /**
- * @brief Total number of neofunctionalization events 
+ * @brief Total number of neofunctionalization events
  * @details Needs to specify pairs of function.
  */
 inline void counter_neofun(
@@ -1025,34 +1025,34 @@ inline void counter_neofun(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
         // Is this node duplication?
         IF_NOTMATCHES()
             return 0.0;
-        
+
         auto funA = data[1u];
         auto funB = data[2u];
 
         // Is the function in scope relevant?
         if ((i != funA) && (i != funB))
             return 0.0;
-        
+
         // Checking if the parent has both functions
         size_t other = (i == funA)? funB : funA;
         bool parent_i     = Array.D_ptr()->states[i];
         bool parent_other = Array.D_ptr()->states[other];
-        
-        if (!parent_i & !parent_other) 
+
+        if (!parent_i & !parent_other)
             return 0.0;
-        else if (parent_i & parent_other) 
+        else if (parent_i & parent_other)
             return 0.0;
-        
+
         // Figuring out which is the first (reference) function
         double res = 0.0;
-        
+
         if (Array(other, j) == 0u)
         {
 
@@ -1068,13 +1068,13 @@ inline void counter_neofun(
             for (auto off = 0u; off < Array.ncol(); ++off)
                 if ((Array(i,off) == 1) && (Array(other,off) == 0))
                     res -= 1.0;
-                
+
         }
-             
+
         return res;
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init) {
 
         PHYLO_CHECK_MISSING();
@@ -1088,14 +1088,14 @@ inline void counter_neofun(
         "Neofun between " + std::to_string(nfunA) + " and " +
         std::to_string(nfunB) + get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 //------------------------------------------------------------------------------
 /**
- * @brief Total number of neofunctionalization events 
+ * @brief Total number of neofunctionalization events
  * sum_u sum_{w < u} [x(u,a)*(1 - x(w,a)) + (1 - x(u,a)) * x(w,a)]
  * change stat: delta{x(u,a): 0->1} = 1 - 2 * x(w,a)
  */
@@ -1105,22 +1105,22 @@ inline void counter_pairwise_neofun_singlefun(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
         // Is this node duplication?
         IF_NOTMATCHES()
             return 0.0;
-        
+
         // Is the function in scope relevant?
         if (i != data[1u])
             return 0.0;
-        
+
         // Checking if the parent has the function
         if (Array.D_ptr()->states[i])
             return 0.0;
-        
+
         // Figuring out which is the first (reference) function
         double res = 0.0;
         for (auto off = 0u; off < Array.ncol(); ++off)
@@ -1131,7 +1131,7 @@ inline void counter_pairwise_neofun_singlefun(
 
             if ((Array(i, off) == 0))
                 res += 1.0;
-            else 
+            else
                 res -= 1.0;
 
         }
@@ -1139,7 +1139,7 @@ inline void counter_pairwise_neofun_singlefun(
         return res;
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init) {
 
         PHYLO_CHECK_MISSING();
@@ -1153,14 +1153,14 @@ inline void counter_pairwise_neofun_singlefun(
         "Pairwise neofun function " + std::to_string(nfunA) +
         get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 //------------------------------------------------------------------------------
 /**
- * @brief Total number of neofunctionalization events 
+ * @brief Total number of neofunctionalization events
  * @details Needs to specify pairs of function.
  */
 inline void counter_neofun_a2b(
@@ -1170,23 +1170,23 @@ inline void counter_neofun_a2b(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
         // Is this node duplication?
         IF_NOTMATCHES()
             return 0.0;
-        
+
         const size_t & funA = data[1u];
         const size_t & funB = data[2u];
 
         // Checking scope
         if ((i != funA) && (i != funB))
             return 0.0;
-        
+
         // Checking the parent doesn't have funA or has funB
-        if (!Array.D_ptr()->states[funA] || Array.D_ptr()->states[funB]) 
+        if (!Array.D_ptr()->states[funA] || Array.D_ptr()->states[funB])
             return 0.0;
 
         double res = 0.0;
@@ -1214,7 +1214,7 @@ inline void counter_neofun_a2b(
 
                 for (auto off = 0u; off < Array.ncol(); ++off)
                 {
-                    
+
                     if (off == j)
                         continue;
 
@@ -1249,7 +1249,7 @@ inline void counter_neofun_a2b(
 
                 for (auto off = 0u; off < Array.ncol(); ++off)
                 {
-                    
+
                     if (off == j)
                         continue;
 
@@ -1263,9 +1263,9 @@ inline void counter_neofun_a2b(
         }
 
         return res;
-        
+
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
 
@@ -1280,9 +1280,9 @@ inline void counter_neofun_a2b(
         "Neofun from " + std::to_string(nfunA) + " to " +
         std::to_string(nfunB) + get_last_name(duplication)
     );
-    
+
     return;
-    
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1299,17 +1299,17 @@ inline void counter_neofun_a2b(
 inline void counter_co_opt(
     PhyloCounters * counters,
     size_t nfunA,
-    size_t nfunB, 
+    size_t nfunB,
     size_t duplication = Geese::etype_default
 ) {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
-    { 
+    {
 
         // Checking whether this is for duplication or not
         IF_NOTMATCHES()
             return 0.0;
-        
+
         const size_t funA = data[1u];
         const size_t funB = data[2u];
 
@@ -1326,7 +1326,7 @@ inline void counter_co_opt(
 
             // What was the state of the other function? If B is present, then
             // nothing changes.
-            if (Array(funB, j, false) == 1u) 
+            if (Array(funB, j, false) == 1u)
                 return 0.0;
 
             // Iterating through the sibs
@@ -1341,7 +1341,7 @@ inline void counter_co_opt(
 
             // What was the state of the other function? If A is not present, then
             // nothing changes.
-            if (Array(funA, j, false) == 0u) 
+            if (Array(funA, j, false) == 0u)
                 return 0.0;
 
             // Iterating through the sibs
@@ -1354,10 +1354,10 @@ inline void counter_co_opt(
 
         }
 
-        
+
 
     };
-    
+
     PHYLO_COUNTER_LAMBDA(tmp_init) {
 
         PHYLO_CHECK_MISSING();
@@ -1383,10 +1383,10 @@ inline void counter_co_opt(
         "Coopt of " + std::to_string(nfunA) + " by " +
         std::to_string(nfunB) + get_last_name(duplication)
     );
-    
-    
+
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1400,10 +1400,10 @@ inline void counter_k_genes_changing(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
-        
+
         PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
@@ -1416,7 +1416,7 @@ inline void counter_k_genes_changing(
                 return Array.ncol() == data[1u] ? 1.0 : 0.0;
 
         return data[1u] == 0 ? 1.0 : 0.0;
-      
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_count)
@@ -1425,9 +1425,9 @@ inline void counter_k_genes_changing(
         // Checking the type of event
         IF_NOTMATCHES()
             return 0.0;
-        
+
         // How many genes diverge the parent
-        int              count = 0; 
+        int              count = 0;
         bool        j_diverges = false;
         const auto & par_state = Array.D_ptr()->states;
 
@@ -1500,13 +1500,13 @@ inline void counter_k_genes_changing(
         return (count == k ? 1.0 : 0.0) - (count_prev == k ? 1.0 : 0.0);
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, k}),
         std::to_string(k) + " genes changing" + get_last_name(duplication)
     );
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1520,10 +1520,10 @@ inline void counter_less_than_p_prop_genes_changing(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_init)
     {
-        
+
         PHYLO_CHECK_MISSING();
 
         IF_NOTMATCHES()
@@ -1535,7 +1535,7 @@ inline void counter_less_than_p_prop_genes_changing(
 
         // Only one if it was specified it was zero
         return 1.0;
-      
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_count)
@@ -1544,7 +1544,7 @@ inline void counter_less_than_p_prop_genes_changing(
         // Checking the type of event
         IF_NOTMATCHES()
             return 0.0;
-        
+
         // Setup
         double count = 0.0; ///< How many genes diverge the parent
 
@@ -1616,13 +1616,13 @@ inline void counter_less_than_p_prop_genes_changing(
         return ((count/ncol) <= p ? 1.0 : 0.0) - ((count_prev/ncol) <= p ? 1.0 : 0.0);
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, static_cast<size_t>(p * 100)}),
         std::to_string(p) + " prop genes changing" + get_last_name(duplication)
     );
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1636,7 +1636,7 @@ inline void counter_gains_from_0(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -1669,7 +1669,7 @@ inline void counter_gains_from_0(
 
 
         return res;
-        
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_init) {
@@ -1678,7 +1678,7 @@ inline void counter_gains_from_0(
         return 0.0;
 
     };
-    
+
     for (auto& i : nfun)
         counters->add_counter(
             tmp_count, tmp_init, nullptr,
@@ -1686,9 +1686,9 @@ inline void counter_gains_from_0(
             "First gain " + std::to_string(i) +
                 get_last_name(duplication)
         );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1701,7 +1701,7 @@ inline void counter_overall_gains_from_0(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -1718,7 +1718,7 @@ inline void counter_overall_gains_from_0(
         }
 
         return 1.0;
-        
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_init) {
@@ -1727,16 +1727,16 @@ inline void counter_overall_gains_from_0(
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Overall first gains" +
             get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1749,7 +1749,7 @@ inline void counter_pairwise_overall_change(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -1770,9 +1770,9 @@ inline void counter_pairwise_overall_change(
             else if (funpar < Array(i, off))
                 res += 1.0;
         }
-        
+
         return res;
-        
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_init) {
@@ -1791,16 +1791,16 @@ inline void counter_pairwise_overall_change(
         return res;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication}),
         "Pairs of genes changing" +
             get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1816,7 +1816,7 @@ inline void counter_pairwise_preserving(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -1843,7 +1843,7 @@ inline void counter_pairwise_preserving(
         {
 
             if (Array(k, j) == 1u)
-                return 0.0; 
+                return 0.0;
 
             for (auto off = 0u; off < Array.ncol(); ++off)
             {
@@ -1861,7 +1861,7 @@ inline void counter_pairwise_preserving(
         {
 
             if (Array(k, j) == 1u)
-                return 0.0; 
+                return 0.0;
 
             for (auto off = 0u; off < Array.ncol(); ++off)
             {
@@ -1879,7 +1879,7 @@ inline void counter_pairwise_preserving(
         {
 
             if (Array(k, j) == 0u)
-                return 0.0; 
+                return 0.0;
 
             for (auto off = 0u; off < Array.ncol(); ++off)
             {
@@ -1897,7 +1897,7 @@ inline void counter_pairwise_preserving(
         {
 
             if (Array(k, j) == 0u)
-                return 0.0; 
+                return 0.0;
 
             for (auto off = 0u; off < Array.ncol(); ++off)
             {
@@ -1912,7 +1912,7 @@ inline void counter_pairwise_preserving(
         }
 
         return res;
-        
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_init) {
@@ -1920,9 +1920,9 @@ inline void counter_pairwise_preserving(
 
         IF_NOTMATCHES()
             return 0.0;
-        
+
         PHYLO_CHECK_MISSING();
-        
+
         double n = static_cast< double >(Array.ncol());
         if (!Array.D_ptr()->states[data[1u]] && !Array.D_ptr()->states[data[2u]])
             return n * (n - 1.0) / 2.0;
@@ -1930,16 +1930,16 @@ inline void counter_pairwise_preserving(
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, nfunA, nfunB}),
         "Pariwise preserve (" + std::to_string(nfunA) + ", " +
             std::to_string(nfunB) + ")" +get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 // -----------------------------------------------------------------------------
@@ -1955,7 +1955,7 @@ inline void counter_pairwise_first_gain(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_COUNTER_LAMBDA(tmp_count)
     {
 
@@ -2004,7 +2004,7 @@ inline void counter_pairwise_first_gain(
                 else
                 {
 
-                    if (Array(k, off) == 1u) 
+                    if (Array(k, off) == 1u)
                     // j: (0,0)\(0,1) -> (1,0)\(0,1), so less 1
                         res -= 1.0;
                     else
@@ -2016,29 +2016,29 @@ inline void counter_pairwise_first_gain(
             }
 
         }
-        
+
 
         return res;
-        
+
     };
 
     PHYLO_COUNTER_LAMBDA(tmp_init) {
 
         PHYLO_CHECK_MISSING();
-        
+
         return 0.0;
 
     };
-    
+
     counters->add_counter(
         tmp_count, tmp_init, nullptr,
         PhyloCounterData({duplication, nfunA, nfunB}),
         "First gain (either " + std::to_string(nfunA) + " or " +
             std::to_string(nfunB) + ")" +get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 ///@}
@@ -2081,7 +2081,7 @@ inline void rule_leafs(
  * @param pos Position of the focal statistic.
  * @param lb Lower bound
  * @param ub Upper bound
- * @details 
+ * @details
  * @return (void) adds a rule limiting the support of the model.
  */
 inline void rule_dyn_limit_changes(
@@ -2092,7 +2092,7 @@ inline void rule_dyn_limit_changes(
     size_t duplication = Geese::etype_default
 )
 {
-  
+
     PHYLO_RULE_DYN_LAMBDA(tmp_rule)
     {
 
@@ -2104,7 +2104,7 @@ inline void rule_dyn_limit_changes(
                 return true;
             else if (!Array.D_ptr()->duplication & (rule_type != Geese::etype_speciation))
                 return true;
-                
+
         }
 
         if (data() < data.lb)
@@ -2113,7 +2113,7 @@ inline void rule_dyn_limit_changes(
             return false;
         else
             return true;
-      
+
     };
 
     // Checking whether the rule makes sense (dupl)
@@ -2128,27 +2128,27 @@ inline void rule_dyn_limit_changes(
                     )
         );
     }
-    
+
     support->get_rules_dyn()->add_rule(
         tmp_rule,
         PhyloRuleDynData(
             support->get_current_stats(),
             pos, lb, ub, duplication
             ),
-        std::string("Limiting changes in '") + 
+        std::string("Limiting changes in '") +
             support->get_counters()->get_names()[pos] +
             "' to [" + std::to_string(lb) + ", " +
             std::to_string(ub) + std::string("]") +
-            get_last_name(duplication),        
-        std::string("When the support is ennumerated, the number of changes in '") + 
+            get_last_name(duplication),
+        std::string("When the support is ennumerated, the number of changes in '") +
             support->get_counters()->get_names()[pos] +
             std::to_string(pos) + "' is limited to [" + std::to_string(lb) + ", " +
             std::to_string(ub) + "]" +
             get_last_name(duplication)
     );
-    
+
     return;
-  
+
 }
 
 ///@}

@@ -1,4 +1,4 @@
-#ifndef GEESE_FLOCK_MEET_HPP 
+#ifndef GEESE_FLOCK_MEET_HPP
 #define GEESE_FLOCK_MEET_HPP 1
 
 // #include "flock-bones.hpp"
@@ -17,7 +17,7 @@ inline size_t Flock::add_data(
         model.set_rengine(&this->rengine, false);
 
         model.add_hasher(keygen_full);
-        
+
         model.store_psets();
 
     }
@@ -34,7 +34,7 @@ inline size_t Flock::add_data(
 
     if (dat.size() == 1u)
         this->nfunctions = dat[0].nfuns();
-       
+
     return dat.size() - 1u;
 
 }
@@ -65,7 +65,7 @@ inline void Flock::init(size_t bar_width)
 
         a.rengine         = &rengine;
         a.delete_rengine  = false;
-        
+
     }
 
     // Initializing the models.
@@ -94,7 +94,7 @@ inline void Flock::init(size_t bar_width)
     }
 
     this->initialized = true;
-    
+
 }
 
 inline PhyloCounters * Flock::get_counters()
@@ -157,10 +157,10 @@ inline double Flock::likelihood_joint(
             #if defined(_OPENMP) || defined(__OPENMP)
             #pragma omp parallel for reduction(+:ans) num_threads(ncores)
             #endif
-            for (auto& d : this->dat) 
+            for (auto& d : this->dat)
                 ans += d.likelihood(par, as_log, use_reduced_sequence, 1u, true);
         } else {
-            for (auto& d : this->dat) 
+            for (auto& d : this->dat)
                 ans += d.likelihood(par, as_log, use_reduced_sequence, 1u, true);
         }
 
@@ -168,20 +168,20 @@ inline double Flock::likelihood_joint(
     else
     {
 
-        if (ncores > 1u) 
+        if (ncores > 1u)
         {
             #if defined(_OPENMP) || defined(__OPENMP)
             #pragma omp parallel for reduction(*:ans) num_threads(ncores)
             #endif
-            for (auto& d : this->dat) 
+            for (auto& d : this->dat)
                 ans *= d.likelihood(par, as_log, use_reduced_sequence, 1u, true);
         } else {
-            for (auto& d : this->dat) 
+            for (auto& d : this->dat)
                 ans *= d.likelihood(par, as_log, use_reduced_sequence, 1u, true);
         }
-            
+
     }
-    
+
     return ans;
 
 }
@@ -277,7 +277,7 @@ inline size_t Flock::parse_polytomies(
 
 }
 
-inline void Flock::print() const 
+inline void Flock::print() const
 {
 
     // Information relevant to print:
@@ -300,23 +300,23 @@ inline void Flock::print() const
         nones  += tree.n_ones;
         ndpl   += tree.n_dupl_events;
         nspe   += tree.n_spec_events;
-        
+
     }
 
     printf_barry("FLOCK (GROUP OF GEESE)\nINFO ABOUT THE PHYLOGENIES\n");
-    
+
     printf_barry("# of phylogenies         : %li\n", ntrees());
-    
+
     printf_barry("# of functions           : %li\n", nfuns());
-    
+
     printf_barry("# of ann. [zeros; ones]  : [%li; %li]\n", nzeros, nones);
-    
+
     printf_barry("# of events [dupl; spec] : [%li; %li]\n", ndpl, nspe);
-    
+
     printf_barry("Largest polytomy         : %li\n", parse_polytomies(false));
-    
+
     printf_barry("\nINFO ABOUT THE SUPPORT\n");
-    
+
     return this->model.print();
 
 }

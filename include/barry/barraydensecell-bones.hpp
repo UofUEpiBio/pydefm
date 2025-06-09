@@ -20,19 +20,19 @@ class BArrayDenseCell {
     friend class BArrayDenseCol<Cell_Type,Data_Type>;
     friend class BArrayDenseCol_const<Cell_Type,Data_Type>;
 private:
-  
+
     BArrayDense<Cell_Type,Data_Type> * dat;
     size_t i;
     size_t j;
-  
+
 public:
-  
+
     BArrayDenseCell(
         BArrayDense<Cell_Type,Data_Type> * Array_,
         size_t i_,
         size_t j_,
         bool check_bounds = true
-        ) : 
+        ) :
     i(i_), j(j_)
     {
 
@@ -62,7 +62,7 @@ public:
 
     operator Cell_Type() const;
     bool operator==(const Cell_Type & val) const;
-  
+
 };
 
 

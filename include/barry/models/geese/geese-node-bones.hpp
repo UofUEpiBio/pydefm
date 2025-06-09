@@ -27,17 +27,17 @@ public:
 
     std::vector< double > subtree_prob; ///< Induced subtree probabilities
     std::vector< double > probability;  ///< The probability of observing each state
-    
+
     /**
      * @name Construct a new Node object
-     * 
+     *
      */
     ///@{
-    
+
     Node() : ord(std::numeric_limits< size_t >::max()) {};
     Node(size_t id_, size_t ord_, bool duplication_);
     Node(size_t id_, size_t ord_, std::vector< size_t > annotations_, bool duplication_);
-    
+
     // Move constructor
     Node(Node && x) noexcept;
 
@@ -79,11 +79,11 @@ inline Node::Node(Node && x) noexcept :
     probability(std::move(x.probability)) {
 
     return;
-    
+
 }
 
 inline Node::Node(const Node & x) :
-    id(x.id), ord(x.ord), array(x.array), 
+    id(x.id), ord(x.ord), array(x.array),
     annotations(x.annotations),
     duplication(x.duplication), arrays(x.arrays),
     parent(x.parent),
@@ -94,7 +94,7 @@ inline Node::Node(const Node & x) :
     probability(x.probability) {
 
         return;
-    
+
 }
 
 inline int Node::get_parent() const {

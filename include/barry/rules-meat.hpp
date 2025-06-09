@@ -6,7 +6,7 @@ inline Rules<Array_Type,Data_Type>::Rules(
     const Rules<Array_Type,Data_Type> & rules_
 ) {
 
-    // Copy all rules, if a rule is tagged as 
+    // Copy all rules, if a rule is tagged as
     // to be deleted, then copy the value
     for (auto i = 0u; i != rules_.size(); ++i)
         this->add_rule(rules_.data[i]);
@@ -22,7 +22,7 @@ Rules<Array_Type,Data_Type> Rules<Array_Type,Data_Type>::operator=(
 
     if (this != &rules_) {
 
-        // Copy all rules, if a rule is tagged as 
+        // Copy all rules, if a rule is tagged as
         // to be deleted, then copy the value
         for (auto i = 0u; i != rules_.size(); ++i)
             this->add_rule(rules_.data[i]);
@@ -72,9 +72,9 @@ template <typename Array_Type, typename Data_Type>
 inline void Rules<Array_Type,Data_Type>::add_rule(
         Rule<Array_Type, Data_Type> rule
 ) {
-    
+
     data.push_back(rule);
-    
+
     return;
 }
 
@@ -85,32 +85,32 @@ inline void Rules<Array_Type,Data_Type>::add_rule(
         std::string name_,
         std::string description_
 ) {
-       
+
     data.push_back(Rule<Array_Type,Data_Type>(
         rule_,
         data_,
         name_,
         description_
     ));
-    
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Type>
 inline bool Rules<Array_Type,Data_Type>::operator()(
     const Array_Type & a, size_t i, size_t j
 ) {
-    
+
     if (data.size()==0u)
         return true;
-    
+
     for (auto & f: data)
         if (!f.operator()(a, i, j))
             return false;
-    
+
     return true;
-    
+
 }
 
 template <typename Array_Type, typename Data_Type>
@@ -120,14 +120,14 @@ inline void Rules<Array_Type,Data_Type>::get_seq(
     std::vector< size_t > * locked
 ) {
 
-    
+
     size_t N = a.nrow();
     size_t K = a.ncol();
-    
+
     // Reserving some space
     (void) free->empty();
     (void) free->reserve(2u * N * K);
-    
+
     for (size_t i = 0u; i < N; ++i)
     {
 
@@ -152,11 +152,11 @@ inline void Rules<Array_Type,Data_Type>::get_seq(
 
             free->push_back(i);
             free->push_back(j);
-                
+
         }
 
     }
-    
+
     free->shrink_to_fit();
 
     return;
@@ -179,7 +179,7 @@ inline std::vector<std::string> Rules<Array_Type, Data_Type>::get_names() const
 template<typename Array_Type, typename Data_Type>
 inline std::vector<std::string> Rules<Array_Type, Data_Type>::get_descriptions() const
 {
-    
+
     std::vector< std::string > out;
     out.reserve(this->size());
     for (size_t i = 0u; i < out.size(); ++i)

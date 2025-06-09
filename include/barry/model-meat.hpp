@@ -1,4 +1,4 @@
-#ifndef BARRY_MODEL_MEAT_HPP 
+#ifndef BARRY_MODEL_MEAT_HPP
 #define BARRY_MODEL_MEAT_HPP 1
 
 /**
@@ -21,9 +21,9 @@ inline double update_normalizing_constant(
     {
 
         const double p = params[j];
-        
+
         #if defined(__OPENMP) || defined(_OPENMP)
-        #pragma omp simd 
+        #pragma omp simd
         #elif defined(__GNUC__) && !defined(__clang__)
             #pragma GCC ivdep
         #endif
@@ -32,7 +32,7 @@ inline double update_normalizing_constant(
 
     }
 
-    // Accumulate resv to a double res        
+    // Accumulate resv to a double res
     #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp simd reduction(+:res)
     #elif defined(__GNUC__) && !defined(__clang__)
@@ -65,7 +65,7 @@ inline double update_normalizing_constant(
     #endif
 
     return res;
-    
+
 }
 
 inline double likelihood_(
@@ -75,12 +75,12 @@ inline double likelihood_(
         size_t n_params,
         bool log_ = false
 ) {
-    
+
     if (n_params != params.size())
         throw std::length_error("-stats_target- and -params- should have the same length.");
-        
+
     double numerator = 0.0;
-    
+
     // Computing the numerator
     #ifdef __INTEL_LLVM_COMPILER
     #pragma code_align 32
@@ -124,7 +124,7 @@ inline double likelihood_(
     #endif
 
     return ans;
-    
+
 }
 
 template <
@@ -145,10 +145,10 @@ inline void Model<Array_Type, Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_T
     if ((ncores > 1u) && (n < 128u))
         ncores = 1u;
 
-    
+
     if (i >= 0)
         ncores = 1u;
-    
+
     #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp parallel for firstprivate(params) num_threads(ncores) \
         shared(n, normalizing_constants, first_calc_done, \
@@ -174,7 +174,7 @@ inline void Model<Array_Type, Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_T
     }
 
     return;
-    
+
 }
 
 template <
@@ -187,7 +187,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
     const std::vector< double > & params,
     size_t ncores
 ) {
-    
+
     update_normalizing_constants(params, ncores);
 
     size_t n_params = params.size();
@@ -211,9 +211,9 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
             std::exp(stats_likelihood[s] BARRY_SAFE_EXP)/
             normalizing_constants[arrays2support[s]];
     }
-    
+
     return;
-    
+
 }
 
 template <
@@ -229,7 +229,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
 ) {
 
     update_normalizing_constants(params, ncores, i);
-    
+
     if (i > -1)
         params_last[i] = params;
 
@@ -241,7 +241,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
 
     // No need to paralelize if there is only one core
     if (i >= 0)
-       ncores = 1u; 
+       ncores = 1u;
 
     #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp parallel for num_threads(ncores) collapse(1) \
@@ -264,7 +264,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
 
         // Looping over observations of the pset
         #if defined(__OPENMP) || defined(_OPENMP)
-        #pragma omp simd 
+        #pragma omp simd
         #endif
         for (size_t a = 0u; a < pset_sizes[s]; ++a)
         {
@@ -272,9 +272,9 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
             // Start location in the array is defined by the location
             // of the pset_prob (how many arrays before it), plus
             // the location in that sequence (a), times the number of
-            // parameters in the model. 
+            // parameters in the model.
             size_t start_loc = (pset_start + a) * n_params;
-            
+
             pset_probs[pset_start + a] = 0.0;
 
             // Looping over the parameters
@@ -305,7 +305,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
 
         #endif
     }
-    
+
     return;
 
 }
@@ -334,18 +334,18 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::M
     delete_rules_dyn(true),
     transform_model_fun(nullptr),
     transform_model_term_names(0u)
-{  
+{
 
     // Counters are shared
     support_fun.set_counters(counters);
     counter_fun.set_counters(counters);
-    
+
     // Rules are shared
     support_fun.set_rules(rules);
     support_fun.set_rules_dyn(rules_dyn);
-    
+
     return;
-    
+
 }
 
 template <
@@ -363,7 +363,7 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::M
     stats_support_n_arrays(0u),
     stats_target(0u),
     stats_likelihood(0u),
-    arrays2support(0u), keys2support(0u), 
+    arrays2support(0u), keys2support(0u),
     pset_arrays(0u), pset_stats(0u),
     counters(new Counters<Array_Type,Data_Counter_Type>()),
     rules(new Rules<Array_Type,Data_Rule_Type>()),
@@ -374,20 +374,20 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::M
     transform_model_fun(nullptr),
     transform_model_term_names(0u)
 {
-    
+
     stats_target.reserve(size_);
     arrays2support.reserve(size_);
 
     // Counters are shared
     support_fun.set_counters(counters);
     counter_fun.set_counters(counters);
-    
+
     // Rules are shared
     support_fun.set_rules(rules);
     support_fun.set_rules_dyn(rules_dyn);
-        
+
     return;
-    
+
 }
 
 template <
@@ -398,7 +398,7 @@ template <
     >
 inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::Model(
     const Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> & Model_
-    ) : 
+    ) :
     stats_support(Model_.stats_support),
     stats_support_sizes(Model_.stats_support_sizes),
     stats_support_sizes_acc(Model_.stats_support_sizes_acc),
@@ -427,17 +427,17 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::M
     transform_model_fun(Model_.transform_model_fun),
     transform_model_term_names(Model_.transform_model_term_names)
     {
-    
+
     // Counters are shared
     support_fun.set_counters(counters);
     counter_fun.set_counters(counters);
-    
+
     // Rules are shared
     support_fun.set_rules(rules);
     support_fun.set_rules_dyn(rules_dyn);
 
     return;
-    
+
 }
 
 template <
@@ -446,11 +446,11 @@ template <
     typename Data_Rule_Type,
     typename Data_Rule_Dyn_Type
     >
-inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> & 
+inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> &
     Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::operator=(
     const Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> & Model_
 ) {
-    
+
     // Clearing
     if (this != &Model_) {
 
@@ -459,10 +459,10 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> &
 
         if (delete_rules)
             delete rules;
-        
+
         if (delete_rules_dyn)
             delete rules_dyn;
-        
+
         stats_support              = Model_.stats_support;
         stats_support_sizes        = Model_.stats_support_sizes;
         stats_support_sizes_acc    = Model_.stats_support_sizes_acc;
@@ -492,15 +492,15 @@ inline Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type> &
         // Counters are shared
         support_fun.set_counters(counters);
         counter_fun.set_counters(counters);
-        
+
         // Rules are shared
         support_fun.set_rules(rules);
         support_fun.set_rules_dyn(rules_dyn);
-        
+
     }
-        
+
     return *this;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -513,14 +513,14 @@ template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Ty
 inline std::vector< double > Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: gen_key(
     const Array_Type & Array_
 ) {
-    return this->counters->gen_hash(Array_);   
+    return this->counters->gen_hash(Array_);
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: add_counter(
         Counter<Array_Type, Data_Counter_Type> & counter
 ) {
-    
+
     counters->add_counter(counter, Data_Counter_Type());
     return;
 }
@@ -531,15 +531,15 @@ inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Ty
     Counter_fun_type<Array_Type,Data_Counter_Type> init_fun_,
     Data_Counter_Type                              data_
 ) {
-    
+
     counters->add_counter(
         count_fun_,
         init_fun_,
         data_
     );
-    
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -551,13 +551,13 @@ inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Ty
         delete counters;
         delete_counters = false;
     }
-    
+
     this->counters = counters_;
     support_fun.set_counters(counters);
     counter_fun.set_counters(counters);
-    
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -575,7 +575,7 @@ template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Ty
 inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: add_rule(
     Rule<Array_Type, Data_Rule_Type> & rules
 ) {
-    
+
     rules->add_rule(rules, Data_Rule_Type());
     return;
 }
@@ -603,7 +603,7 @@ template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Ty
 inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: add_rule_dyn(
     Rule<Array_Type, Data_Rule_Dyn_Type> & rules_
 ) {
-    
+
     rules_dyn->add_rule(rules_, Data_Rule_Dyn_Type());
     return;
 }
@@ -613,14 +613,14 @@ inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Ty
     Rule_fun_type<Array_Type,Data_Rule_Dyn_Type> rule_fun_,
     Data_Rule_Dyn_Type                           data_
 ) {
-    
+
     rules_dyn->add_rule(
         rule_fun_,
         data_
     );
-    
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -646,13 +646,13 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
     const Array_Type & Array_,
     bool force_new
 ) {
-    
+
     // Array counts (target statistics)
     counter_fun.reset_array(&Array_);
-    
+
     if (transform_model_fun)
     {
-        
+
         auto tmpcounts = counter_fun.count_all();
         stats_target.emplace_back(
             transform_model_fun(&tmpcounts[0u], tmpcounts.size())
@@ -660,7 +660,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
 
     } else
         stats_target.push_back(counter_fun.count_all());
-    
+
     // If the data hasn't been analyzed earlier, then we need to compute
     // the support
     std::vector< double > key = counters->gen_hash(Array_);
@@ -670,36 +670,36 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
 
         // Current size of the support stats
         size_t stats_support_size = stats_support.size();
-        
+
         // Adding to the map
         keys2support[key] = stats_support_sizes.size();
         stats_support_n_arrays.push_back(1u);       // How many elements now
         arrays2support.push_back(stats_support_sizes.size()); // Map of the array id to the support
-        
+
         // Computing support using the counters included in the model
         support_fun.reset_array(Array_);
-        
+
         /** When computing with the powerset, we need to grow the corresponding
             * vectors on the fly */
         if (with_pset)
         {
 
-            
+
             // Making space for storing the support
             pset_arrays.resize(pset_arrays.size() + 1u);
-            
+
             try
             {
-                
+
                 support_fun.calc(
                     &(pset_arrays[pset_arrays.size() - 1u]),
                     &pset_stats
                 );
-                
+
             }
             catch (const std::exception& e)
             {
-                
+
                 printf_barry(
                     "A problem ocurred while trying to add the array (and recording the powerset). "
                 );
@@ -707,7 +707,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
                 printf_barry("Here is the array that generated the error.\n");
                 Array_.print();
                 throw std::logic_error("");
-                
+
             }
 
             // Recording the number of elements
@@ -719,7 +719,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
 
             pset_sizes.push_back(pset_arrays.back().size());
 
-            
+
         }
         else
         {
@@ -727,7 +727,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
             {
 
                 support_fun.calc();
-                
+
             }
             catch (const std::exception& e)
             {
@@ -742,14 +742,14 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
 
             }
         }
-        
+
         if (transform_model_fun)
         {
             auto tmpsupport = support_fun.get_counts();
             size_t k = counter_fun.size();
             size_t n = tmpsupport.size() / (k + 1);
 
-            std::vector< double > s_new(0u);            
+            std::vector< double > s_new(0u);
             s_new.reserve(tmpsupport.size());
 
             for (size_t i = 0u; i < n; ++i)
@@ -766,13 +766,13 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
 
             for (auto & s : s_new)
                 stats_support.push_back(s);
-            
+
 
         } else {
             for (const auto & s: support_fun.get_counts())
                 stats_support.push_back(s);
         }
-        
+
         // Making room for the previous parameters. This will be used to check if
         // the normalizing constant has been updated or not.
         params_last.push_back(stats_target[0u]);
@@ -783,32 +783,32 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::add_arr
         // Incrementing the size of the support set
         if (stats_support_sizes.size() == 0u)
         {
-            stats_support_sizes_acc.push_back(0u);    
+            stats_support_sizes_acc.push_back(0u);
         } else {
             stats_support_sizes_acc.push_back(
-                stats_support_sizes.back() + 
+                stats_support_sizes.back() +
                 stats_support_sizes_acc.back()
             );
         }
 
 
         stats_support_sizes.push_back(
-            
+
             (stats_support.size() - stats_support_size)/
                 (counter_fun.size() + 1u)
 
             );
-        
+
         return arrays2support.size() - 1u;
-        
+
     }
-    
+
     // Increasing the number of arrays in that stat
     ++stats_support_n_arrays[locator->second];
-    
+
     // Adding the corresponding map
     arrays2support.push_back(locator->second);
-    
+
     return arrays2support.size() - 1u;
 
 }
@@ -820,7 +820,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     bool as_log,
     bool no_update_normconst
 ) {
-    
+
     // Checking if the index exists
     if (i >= arrays2support.size())
         throw std::range_error("The requested support is out of range");
@@ -830,13 +830,13 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     // Checking if this actually has a change of happening
     if (this->stats_support_sizes[idx] == 0u)
         return as_log ? -std::numeric_limits<double>::infinity() : 0.0;
-    
+
     // Checking if we have updated the normalizing constant or not
     if (!no_update_normconst && (!first_calc_done[idx] || !vec_equal_approx(params, params_last[idx])))
     {
-        
+
         first_calc_done[idx] = true;
-        
+
         size_t k = params.size() + 1u;
         size_t n = stats_support_sizes[idx];
 
@@ -845,11 +845,11 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
                 stats_support_sizes_acc[idx] * k
                 ], k, n
         );
-        
+
         params_last[idx] = params;
-        
+
     }
-    
+
     return likelihood_(
         &stats_target[i],
         params,
@@ -857,7 +857,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
         nterms(),
         as_log
     );
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -868,7 +868,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     bool as_log,
     bool no_update_normconst
 ) {
-    
+
     // Key of the support set to use
     int loc;
 
@@ -877,7 +877,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
 
         std::vector< double > key = counters->gen_hash(Array_);
         MapVec_type< double, size_t >::const_iterator locator = keys2support.find(key);
-        if (locator == keys2support.end()) 
+        if (locator == keys2support.end())
             throw std::range_error(
                 "This type of array has not been included in the model."
                 );
@@ -900,12 +900,12 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     // Checking if this actually has a change of happening
     if (this->stats_support_sizes[loc] == 0u)
         return as_log ? -std::numeric_limits<double>::infinity() : 0.0;
-    
+
     // Counting stats_target
     StatsCounter< Array_Type, Data_Counter_Type> tmpstats(&Array_);
 
     tmpstats.set_counters(this->counters);
-    
+
     std::vector< double > target_ = tmpstats.count_all();
 
     if (transform_model_fun)
@@ -914,26 +914,26 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     // Checking if we have updated the normalizing constant or not
     if (!no_update_normconst && (!first_calc_done[loc] || !vec_equal_approx(params, params_last[loc])) )
     {
-        
+
         first_calc_done[loc] = true;
 
         size_t k = params.size() + 1u;
         size_t n = stats_support_sizes[loc];
-        
+
         normalizing_constants[loc] = update_normalizing_constant(
             params, &stats_support[
                 stats_support_sizes_acc[loc] * k
                 ], k, n
         );
-        
+
         params_last[loc] = params;
-        
+
     }
 
     // Checking if passes the rules
     if (!support_fun.eval_rules_dyn(target_, 0u, 0u))
         return as_log ? -std::numeric_limits<double>::infinity() : 0.0;
-    
+
     return likelihood_(
         &target_[0u],
         params,
@@ -941,7 +941,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
         nterms(),
         as_log
     );
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -952,7 +952,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     bool as_log,
     bool no_update_normconst
 ) {
-    
+
     // Checking if the index exists
     if (i >= arrays2support.size())
         throw std::range_error("The requested support is out of range");
@@ -974,19 +974,19 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
             std::string(".")
             );
     }
-        
+
 
     // Checking if this actually has a change of happening
     if (this->stats_support_sizes[loc] == 0u)
     {
         throw std::logic_error("The support set for this array is empty.");
     }
-    
+
     // Checking if we have updated the normalizing constant or not
     if (!no_update_normconst && (!first_calc_done[loc] || !vec_equal_approx(params, params_last[loc])) ) {
-        
+
         first_calc_done[loc] = true;
-        
+
         size_t k = params.size() + 1u;
         size_t n = stats_support_sizes[loc];
 
@@ -995,11 +995,11 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
                 stats_support_sizes_acc[loc] * k
                 ], k, n
         );
-        
+
         params_last[loc] = params;
-        
+
     }
-    
+
     return likelihood_(
         &target_[0u],
         params,
@@ -1007,7 +1007,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
         nterms(),
         as_log
     );
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -1018,7 +1018,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     bool as_log,
     bool no_update_normconst
 ) {
-    
+
     // Checking if the index exists
     if (i >= arrays2support.size())
         throw std::range_error("The requested support is out of range");
@@ -1053,12 +1053,12 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     {
         throw std::logic_error("The support set for this array is empty.");
     }
-    
+
     // Checking if we have updated the normalizing constant or not
     if (!no_update_normconst && (!first_calc_done[loc] || !vec_equal_approx(params, params_last[loc]) )) {
-        
+
         first_calc_done[loc] = true;
-        
+
         size_t k = params.size() + 1u;
         size_t n = stats_support_sizes[loc];
 
@@ -1067,11 +1067,11 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
                 stats_support_sizes_acc[loc] * k
             ], k, n
         );
-        
+
         params_last[loc] = params;
-        
+
     }
-    
+
     return likelihood_(
         target_,
         params,
@@ -1079,7 +1079,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
         nterms(),
         as_log
     );
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -1089,7 +1089,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     BARRY_NCORES_ARG(),
     bool no_update_normconst
 ) {
-    
+
     size_t params_last_size = params_last.size();
 
     if (!no_update_normconst)
@@ -1108,43 +1108,43 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
 
                 size_t k = params.size() + 1u;
                 size_t n = stats_support_sizes[i];
-                
+
                 first_calc_done[i] = true;
                 normalizing_constants[i] = update_normalizing_constant(
                     params, &stats_support[
                         stats_support_sizes_acc[i] * k
                     ], k, n
                 );
-                
+
                 params_last[i] = params;
-                
+
             }
 
         }
     }
-    
+
     double res = 0.0;
     if (as_log)
     {
 
-        for (size_t i = 0; i < stats_target.size(); ++i) 
+        for (size_t i = 0; i < stats_target.size(); ++i)
             res += vec_inner_prod(
                 &stats_target[i][0u],
                 &params[0u],
                 params.size()
                 ) BARRY_SAFE_EXP;
-        
-        #if defined(__OPENMP) || defined(_OPENMP) 
+
+        #if defined(__OPENMP) || defined(_OPENMP)
         #pragma omp simd reduction(-:res)
         #endif
         for (size_t i = 0u; i < params_last_size; ++i)
             res -= (std::log(normalizing_constants[i]) * this->stats_support_n_arrays[i]);
 
     } else {
-        
+
         res = 1.0;
         size_t stats_target_size = stats_target.size();
-        #if defined(__OPENMP) || defined(_OPENMP) 
+        #if defined(__OPENMP) || defined(_OPENMP)
         #pragma omp simd reduction(*:res)
         #endif
         for (size_t i = 0; i < stats_target_size; ++i)
@@ -1153,13 +1153,13 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
                     &stats_target[i][0u],
                     &params[0u],
                     params.size()
-                ) BARRY_SAFE_EXP) / 
+                ) BARRY_SAFE_EXP) /
                 normalizing_constants[arrays2support[i]];
-        
+
     }
-    
+
     return res;
-    
+
 }
 
 template <
@@ -1170,9 +1170,9 @@ template <
     >
 inline const std::vector< double > &
 Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: get_normalizing_constants() const {
-    
+
     return normalizing_constants;
-    
+
 }
 
 template<
@@ -1183,9 +1183,9 @@ template<
     >
 inline const std::vector< double > &
 Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: get_likelihoods() const {
-    
+
     return stats_likelihood;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -1218,7 +1218,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::get_pse
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: print_stats(size_t i) const
 {
-    
+
     if (i >= arrays2support.size())
         throw std::range_error("The requested support is out of range");
 
@@ -1234,10 +1234,10 @@ inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Ty
         printf_barry("% 5li ", l);
 
         printf_barry("counts: %.0f motif: ", stats_support[
-            stats_support_sizes_acc[l] * (k + 1u) 
+            stats_support_sizes_acc[l] * (k + 1u)
             // l * (k + 1u)
             ]);
-        
+
         for (size_t j = 0u; j < k; ++j)
         {
             printf_barry(
@@ -1250,9 +1250,9 @@ inline void Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Ty
         printf_barry("\n");
 
     }
-    
+
     return;
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -1272,11 +1272,11 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
 
         if (static_cast<int>(stat) > max_v)
             max_v = static_cast<int>(stat);
-        
+
         if (static_cast<int>(stat) < min_v)
             min_v = static_cast<int>(stat);
 
-    }  
+    }
 
     // The vectors in the support reflec the size of nterms x entries
     // max_v /= static_cast<int>(nterms() + 1);
@@ -1288,13 +1288,13 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
         printf_barry("Support size         : %li\n", this->size_unique());
         printf_barry("Support size range   : [%i, %i]\n", min_v, max_v);
     }
-    else 
+    else
     {
         printf_barry("Num. of Arrays       : 0\n");
         printf_barry("Support size         : -\n");
         printf_barry("Support size range   : -\n");
     }
-    
+
 
     if (with_pset)
     {
@@ -1313,7 +1313,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
     if (this->nrules() > 0u)
     {
     printf_barry("Model rules (%li)    :\n", this->nrules());
-    
+
         for (auto & rn : rules->get_names())
         {
             printf_barry(" - %s\n", rn.c_str());
@@ -1323,7 +1323,7 @@ inline void Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Typ
     if (this->nrules_dyn() > 0u)
     {
     printf_barry("Model rules dyn (% 2li) :\n", this->nrules_dyn());
-    
+
         for (auto & rn : rules_dyn->get_names())
         {
             printf_barry(" - %s\n", rn.c_str());
@@ -1349,12 +1349,12 @@ inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
     // INITIALIZED()
     return this->stats_support_sizes.size();
 
-} 
+}
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: nterms() const noexcept
 {
- 
+
     if (transform_model_fun)
         return transform_model_term_names.size();
     else
@@ -1365,7 +1365,7 @@ inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: nrules() const noexcept
 {
- 
+
     return this->rules->size();
 
 }
@@ -1373,7 +1373,7 @@ inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: nrules_dyn() const noexcept
 {
- 
+
     return this->rules_dyn->size();
 
 }
@@ -1395,14 +1395,14 @@ inline size_t Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
 inline std::vector< std::string > Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>:: colnames() const
 {
-    
+
     if (transform_model_fun)
         return transform_model_term_names;
     else
         return counters->get_names();
 
 }
-    
+
 template <
     typename Array_Type,
     typename Data_Counter_Type,
@@ -1424,7 +1424,7 @@ Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::sample(
 
     // Getting the index
     size_t a = arrays2support[i];
-    
+
     // Generating a random
     std::uniform_real_distribution<> urand(0, 1);
     double r = urand(*rengine);
@@ -1447,8 +1447,8 @@ Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::sample(
         if (j > 0u)
             j--;
 
-    } else { 
-       
+    } else {
+
         update_pset_probs(params, 1u, static_cast<int>(a));
 
         const double * probs = &pset_probs[pset_locations[a]];
@@ -1468,9 +1468,9 @@ Model<Array_Type,Data_Counter_Type,Data_Rule_Type, Data_Rule_Dyn_Type>::sample(
                 std::string(" r: ") + std::to_string(r)
                 );
         #endif
-        
+
     }
-    
+
     return this->pset_arrays.at(a).at(j);
 
 }
@@ -1499,37 +1499,37 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
         keys2support[key] = stats_support_sizes.size();
         stats_support_n_arrays.push_back(1u);       // How many elements now
         arrays2support.push_back(stats_support_sizes.size()); // Map of the array id to the support
-        
+
         // Computing support using the counters included in the model
         support_fun.reset_array(Array_);
-        
+
         /** When computing with the powerset, we need to grow the corresponding
             * vectors on the fly */
         if (with_pset)
         {
- 
+
 
             // Making space for storing the support
             pset_arrays.resize(pset_arrays.size() + 1u);
-            
+
             try
             {
-                
+
                 support_fun.calc(
                     &(pset_arrays[pset_arrays.size() - 1u]),
                     &pset_stats
                 );
-                
+
             }
             catch (const std::exception& e)
             {
-                
+
                 std::string err = std::string(
                     "A problem ocurred while trying to add the array (and recording the powerset). "
                 );
                 err = err + std::string("with error ") + e.what() + std::string("\n");
                 throw std::logic_error(err);
-                
+
             }
 
             // Recording the number of elements
@@ -1544,20 +1544,20 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
             // Increasing the space to store probabilities
             pset_probs.resize(pset_probs.size() + pset_sizes.back());
 
-            
+
         }
         else
         {
             support_fun.calc();
         }
-        
+
         if (transform_model_fun)
         {
             auto tmpsupport = support_fun.get_counts();
             size_t k = counter_fun.size();
             size_t n = tmpsupport.size() / (k + 1);
 
-            std::vector< double > s_new(0u);            
+            std::vector< double > s_new(0u);
             s_new.reserve(tmpsupport.size());
 
             for (size_t i = 0u; i < n; ++i)
@@ -1582,7 +1582,7 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
 
             // stats_support.push_back(support_fun.get_counts());
         }
-        
+
         // Making room for the previous parameters. This will be used to check if
         // the normalizing constant has been updated or not.
         params_last.push_back(stats_target[0u]);
@@ -1593,23 +1593,23 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
         // Incrementing the size of the support set
         if (stats_support_sizes.size() == 0u)
         {
-            stats_support_sizes_acc.push_back(0u);    
+            stats_support_sizes_acc.push_back(0u);
         } else {
             stats_support_sizes_acc.push_back(
-                stats_support_sizes.back() + 
+                stats_support_sizes.back() +
                 stats_support_sizes_acc.back()
             );
         }
 
 
         stats_support_sizes.push_back(
-            
+
             (stats_support.size() - stats_support_size)/
                 (counter_fun.size() + 1u)
 
             );
 
-        
+
         i = arrays2support.size() - 1u;
     } else
         // Retrieving the corresponding position in the support
@@ -1619,7 +1619,7 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
     size_t a = arrays2support[i];
 
     return sample(a, params);
-    
+
     // // Generating a random
     // std::uniform_real_distribution<> urand(0, 1);
     // double r = urand(*rengine);
@@ -1640,8 +1640,8 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
     //     if (j > 0u)
     //         j--;
 
-    // } else { 
-       
+    // } else {
+
     //     // probs.resize(pset_arrays[a].size());
     //     std::vector< double > temp_stats(params.size());
     //     const double * stats = &pset_stats[pset_locations[a] * k];
@@ -1675,12 +1675,12 @@ inline Array_Type Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_
     //     j = i_matches;
     //     first_calc_done[a] = true;
     // }
-    
+
 
     // #ifdef BARRY_DEBUG
-    // return this->pset_arrays.at(a).at(j);   
+    // return this->pset_arrays.at(a).at(j);
     // #else
-    // return this->pset_arrays[a][j];   
+    // return this->pset_arrays[a][j];
     // #endif
 
 }
@@ -1715,7 +1715,7 @@ inline double Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_
             &params[0u], &tmp_counts[0u], params.size()
             )));
 
-    
+
 }
 
 template <typename Array_Type, typename Data_Counter_Type, typename Data_Rule_Type, typename Data_Rule_Dyn_Type>
@@ -1840,11 +1840,11 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::set_tra
 
     if (transform_model_fun)
         throw std::logic_error("A transformation function for the model has already been established.");
-    
+
     transform_model_fun = fun;
     transform_model_term_names = names;
 
-    size_t k = counters->size(); 
+    size_t k = counters->size();
 
     auto stats_support_old = stats_support;
 
@@ -1855,7 +1855,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::set_tra
         // How many observations in the support
         size_t n = stats_support_sizes[nsupport];
 
-        // Iterating through each observation in the nsupport'th 
+        // Iterating through each observation in the nsupport'th
         for (size_t i = 0; i < n; ++i)
         {
 
@@ -1871,7 +1871,7 @@ Model<Array_Type,Data_Counter_Type, Data_Rule_Type, Data_Rule_Dyn_Type>::set_tra
             if (res.size() != transform_model_term_names.size())
                 throw std::length_error(
                     std::string("The transform vector from -transform_model_fun- ") +
-                    std::string(" does not match the size of ") + 
+                    std::string(" does not match the size of ") +
                     std::string("-transform_model_term_names-.")
                     );
 
