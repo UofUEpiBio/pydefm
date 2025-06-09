@@ -42,7 +42,7 @@ ERGMs. More information in [this preprint](https://arxiv.org/abs/2211.00627).
 - `pip install ./pydefm`
 
 
-# Examples 
+# Examples
 
 ## Base setup
 
@@ -64,7 +64,7 @@ x = np.array([1, 2.0, 3.4, 3, 1, 2])
 id = np.array([1, 1, 1, 2, 2, 2])
 ```
 
-Once we have the needed data -- the binary array `y`, the covariates `x` and the ids `id` -- we can create a `defm` object.  
+Once we have the needed data -- the binary array `y`, the covariates `x` and the ids `id` -- we can create a `defm` object.
 
 ```{python}
 # Creating the object
@@ -83,7 +83,7 @@ m.term_formula(obj, "{y0}")
 m.term_formula(obj, "{y1}")
 m.term_formula(obj, "{0y0, y1}")
 obj.init()
-obj.print() 
+obj.print()
 ```
 
 ```{python}

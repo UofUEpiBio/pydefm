@@ -2,7 +2,7 @@
 // #include "barraydense-bones.hpp"
 
 #ifndef BARRY_BARRAYDENSE_MEAT_HPP
-#define BARRY_BARRAYDENSE_MEAT_HPP 
+#define BARRY_BARRAYDENSE_MEAT_HPP
 
 template<typename Cell_Type, typename Data_Type>
 class BArrayDenseRow;
@@ -26,7 +26,7 @@ class BArrayDenseCell;
 #define POS_N(a,b,c) (b)*(c) + (a)
 
 template<typename Cell_Type, typename Data_Type>
-Cell_Type BArrayDense<Cell_Type,Data_Type>::Cell_default = static_cast< Cell_Type >(1.0); 
+Cell_Type BArrayDense<Cell_Type,Data_Type>::Cell_default = static_cast< Cell_Type >(1.0);
 
 #define ZERO_CELL static_cast<Cell_Type>(0.0)
 
@@ -40,45 +40,45 @@ inline BArrayDense<Cell_Type, Data_Type>::BArrayDense(
     const std::vector< Cell_Type > & value,
     bool add
 ) : N(N_), M(M_), el(N_ * M_, ZERO_CELL), el_rowsums(N_, ZERO_CELL), el_colsums(M_, ZERO_CELL) {
-  
+
     if (source.size() != target.size())
         throw std::length_error("-source- and -target- don't match on length.");
     if (source.size() != value.size())
         throw std::length_error("-sorce- and -value- don't match on length.");
-    
+
     // Writing the data
     for (size_t i = 0u; i < source.size(); ++i)
     {
-      
+
         // Checking range
         bool empty = is_empty(source[i], target[i], true);
         if (add && !empty)
         {
 
             Cell_Type tmp = el[POS(source[i], target[i])];
-            
+
             el_rowsums[source[i]] += (value[i] - tmp);
             el_colsums[target[i]] += (value[i] - tmp);
 
             el[POS(source[i], target[i])] += value[i];
-            
+
             continue;
 
-        } 
-        
+        }
+
         if (!empty)
             throw std::logic_error("The value already exists. Use 'add = true'.");
-          
+
         el[POS(source[i], target[i])] = value[i];
 
         el_rowsums[source[i]] += value[i];
         el_colsums[target[i]] += value[i];
-        
+
 
     }
-    
+
     return;
-  
+
 }
 
 // Edgelist without data
@@ -89,7 +89,7 @@ inline BArrayDense<Cell_Type, Data_Type>:: BArrayDense(
     const std::vector< size_t > & target,
     bool add
 ) : N(N_), M(M_), el(N_ * M_, ZERO_CELL), el_rowsums(N_, ZERO_CELL), el_colsums(M_, ZERO_CELL) {
-  
+
     std::vector< Cell_Type > value(source.size(), static_cast<Cell_Type>(1.0));
 
     if (source.size() != target.size())
@@ -97,38 +97,38 @@ inline BArrayDense<Cell_Type, Data_Type>:: BArrayDense(
     if (source.size() != value.size())
         throw std::length_error("-sorce- and -value- don't match on length.");
 
-    
+
     // Writing the data
     for (size_t i = 0u; i < source.size(); ++i)
     {
-      
+
         // Checking range
         bool empty = is_empty(source[i], target[i], true);
         if (add && !empty)
         {
 
             Cell_Type tmp = el[POS(source[i], target[i])];
-            
+
             el_rowsums[source[i]] += (value[i] - tmp);
             el_colsums[target[i]] += (value[i] - tmp);
 
             el[POS(source[i], target[i])] += value[i];
-            
+
             continue;
 
-        } 
-        
+        }
+
         if (!empty)
             throw std::logic_error("The value already exists. Use 'add = true'.");
-          
+
         el[POS(source[i], target[i])] = value[i];
 
         el_rowsums[source[i]] += value[i];
         el_colsums[target[i]] += value[i];
-        
+
 
     }
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type>
@@ -136,7 +136,7 @@ inline BArrayDense<Cell_Type, Data_Type>:: BArrayDense(
     const BArrayDense<Cell_Type, Data_Type> & Array_,
     bool copy_data
 ) : N(Array_.N), M(Array_.M){
-  
+
     // Dimensions
     el = Array_.el;
     el_rowsums = Array_.el_rowsums;
@@ -144,14 +144,14 @@ inline BArrayDense<Cell_Type, Data_Type>:: BArrayDense(
     // el.resize(0u);
     // el_rowsums.resize(0u);
     // el_colsums.resize(0u);
-    
+
     // std::copy(Array_.el.begin(), Array_.el.end(), std::back_inserter(el));
     // std::copy(Array_.el_rowsums.begin(), Array_.el_rowsums.end(), std::back_inserter(el_rowsums));
     // std::copy(Array_.el_colsums.begin(), Array_.el_colsums.end(), std::back_inserter(el_colsums));
 
     // this->NCells  = Array_.NCells;
     this->visited = Array_.visited;
-    
+
     // Data
     if (Array_.data != nullptr)
     {
@@ -170,27 +170,27 @@ inline BArrayDense<Cell_Type, Data_Type>:: BArrayDense(
         }
 
     }
-    
+
     return;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type>
 inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::operator=(
     const BArrayDense<Cell_Type, Data_Type> & Array_
 ) {
-  
+
     // Clearing
     if (this != &Array_)
     {
-      
+
         el = Array_.el;
         el_rowsums = Array_.el_rowsums;
         el_colsums = Array_.el_colsums;
         // el.resize(0u);
         // el_rowsums.resize(0u);
         // el_colsums.resize(0u);
-        
+
         // // Entries
         // std::copy(Array_.el.begin(), Array_.el.end(), std::back_inserter(el));
         // std::copy(Array_.el_rowsums.begin(), Array_.el_rowsums.end(), std::back_inserter(el_rowsums));
@@ -200,7 +200,7 @@ inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::ope
         // this->NCells = Array_.NCells;
         this->N      = Array_.N;
         this->M      = Array_.M;
-      
+
         // Data
         if (data != nullptr)
         {
@@ -218,11 +218,11 @@ inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::ope
             delete_data = true;
 
         }
-      
+
     }
-      
+
     return *this;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type>
@@ -247,19 +247,19 @@ template<typename Cell_Type, typename Data_Type>
 inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::operator=(
     BArrayDense<Cell_Type, Data_Type> && x
 ) noexcept {
-  
+
     // Clearing
     if (this != &x)
     {
-      
+
         N      = x.N;
         M      = x.M;
         // NCells = x.NCells;
-        
+
         std::swap(el, x.el);
         std::swap(el_rowsums, x.el_rowsums);
         std::swap(el_colsums, x.el_colsums);
-              
+
         // Data
         if (data != nullptr)
         {
@@ -280,38 +280,38 @@ inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::ope
             x.data = nullptr;
 
         }
-      
+
     }
-      
+
     return *this;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type>
 inline bool BArrayDense<Cell_Type, Data_Type>::operator== (
     const BArrayDense<Cell_Type, Data_Type> & Array_
 ) {
-    
+
     // Dimension and number of cells used
     if ( (N != Array_.nrow()) | (M != Array_.ncol()) )
         return false;
-    
+
     // One holds, and the other doesn't.
     if ((!data & Array_.data) | (data & !Array_.data))
         return false;
-    
+
     if (this->el != Array_.el)
         return false;
-    
+
     return true;
 }
 
 template<typename Cell_Type, typename Data_Type>
 inline BArrayDense<Cell_Type, Data_Type>::~BArrayDense () {
-    
+
     if (delete_data && (data != nullptr))
         delete data;
-    
+
     return;
 }
 
@@ -319,16 +319,16 @@ template<typename Cell_Type, typename Data_Type>
 inline void BArrayDense<Cell_Type, Data_Type>::set_data (
     Data_Type * data_,
     bool delete_data_
-) {  
+) {
 
     if ((data != nullptr) && delete_data)
         delete data;
-    
+
     data        = data_;
     delete_data = delete_data_;
-    
+
     return;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
@@ -371,20 +371,20 @@ inline void BArrayDense<Cell_Type, Data_Type>::out_of_range (
     return;
 
 }
-    
+
 template<typename Cell_Type, typename Data_Type>
 inline Cell_Type BArrayDense<Cell_Type, Data_Type>::get_cell (
     size_t i,
     size_t j,
     bool check_bounds
 ) const {
-    
-    // Checking boundaries  
+
+    // Checking boundaries
     if (check_bounds)
         out_of_range(i,j);
-    
+
     return el[POS(i, j)];
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
@@ -393,15 +393,15 @@ inline std::vector< Cell_Type > BArrayDense<Cell_Type, Data_Type>::get_row_vec (
     bool check_bounds
 ) const {
 
-    // Checking boundaries  
-    if (check_bounds) 
+    // Checking boundaries
+    if (check_bounds)
         out_of_range(i, 0u);
 
     std::vector< Cell_Type > ans;
     ans.reserve(ncol());
-    for (size_t j = 0u; j < M; ++j) 
+    for (size_t j = 0u; j < M; ++j)
         ans.push_back(el[POS(i, j)]);
-    
+
     return ans;
 
 }
@@ -412,13 +412,13 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     bool check_bounds
 ) const {
 
-    // Checking boundaries  
-    if (check_bounds) 
+    // Checking boundaries
+    if (check_bounds)
         out_of_range(i, 0u);
 
-    for (size_t j = 0u; j < M; ++j) 
+    for (size_t j = 0u; j < M; ++j)
         x->operator[](j) = el[POS(i, j)];
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline std::vector< Cell_Type > BArrayDense<Cell_Type, Data_Type>:: get_col_vec(
@@ -426,15 +426,15 @@ template<typename Cell_Type, typename Data_Type> inline std::vector< Cell_Type >
     bool check_bounds
 ) const {
 
-    // Checking boundaries  
-    if (check_bounds) 
+    // Checking boundaries
+    if (check_bounds)
         out_of_range(0u, i);
 
     std::vector< Cell_Type > ans;
-    ans.reserve(nrow()); 
-    for (size_t j = 0u; j < N; ++j) 
+    ans.reserve(nrow());
+    for (size_t j = 0u; j < N; ++j)
         ans.push_back(el[POS(j, i)]);
-    
+
     return ans;
 
 }
@@ -445,8 +445,8 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     bool check_bounds
 ) const {
 
-    // Checking boundaries  
-    if (check_bounds) 
+    // Checking boundaries
+    if (check_bounds)
         out_of_range(0u, i);
 
     #ifdef __INTEL_LLVM_COMPILER
@@ -455,9 +455,9 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp simd
     #endif
-    for (size_t j = 0u; j < N; ++j) 
+    for (size_t j = 0u; j < N; ++j)
         x->operator[](j) = el[POS(j, i)];//this->get_cell(iter->first, i, false);
-    
+
 }
 template<typename Cell_Type, typename Data_Type>
 inline const BArrayDenseRow_const<Cell_Type,Data_Type> BArrayDense<Cell_Type, Data_Type>::row(
@@ -486,7 +486,7 @@ inline BArrayDenseRow<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::
 }
 
 template<typename Cell_Type, typename Data_Type>
-inline const BArrayDenseCol_const<Cell_Type,Data_Type> 
+inline const BArrayDenseCol_const<Cell_Type,Data_Type>
 BArrayDense<Cell_Type,Data_Type>::col(
     size_t j,
     bool check_bounds
@@ -500,7 +500,7 @@ BArrayDense<Cell_Type,Data_Type>::col(
 }
 
 template<typename Cell_Type, typename Data_Type>
-inline BArrayDenseCol<Cell_Type,Data_Type> & 
+inline BArrayDenseCol<Cell_Type,Data_Type> &
 BArrayDense<Cell_Type,Data_Type>::col(
     size_t j,
     bool check_bounds
@@ -514,11 +514,11 @@ BArrayDense<Cell_Type,Data_Type>::col(
 }
 
 template<typename Cell_Type, typename Data_Type> inline Entries< Cell_Type > BArrayDense<Cell_Type, Data_Type>:: get_entries() const {
-    
+
     size_t nzero = this->nnozero();
 
     Entries<Cell_Type> res(nzero);
-    
+
     for (size_t i = 0u; i < N; ++i)
     {
         for (size_t j = 0u; j < M; ++j)
@@ -532,12 +532,12 @@ template<typename Cell_Type, typename Data_Type> inline Entries< Cell_Type > BAr
                 res.val.push_back(el[POS(i, j)]);
 
             }
-            
+
 
         }
 
     }
-    
+
     return res;
 
 }
@@ -547,12 +547,12 @@ template<typename Cell_Type, typename Data_Type> inline bool BArrayDense<Cell_Ty
     size_t j,
     bool check_bounds
 ) const {
-    
+
     if (check_bounds)
         out_of_range(i, j);
-    
+
     return el[POS(i, j)] == ZERO_CELL;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline size_t BArrayDense<Cell_Type, Data_Type>:: nrow() const noexcept {
@@ -582,7 +582,7 @@ template<typename Cell_Type, typename Data_Type>
 inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::operator+=(
     const std::pair<size_t,size_t> & coords
 ) {
-    
+
 
     size_t i = coords.first;
     size_t j = coords.second;
@@ -592,16 +592,16 @@ inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::ope
     el[POS(i,j)]  += 1;
     el_rowsums[i] += 1;
     el_colsums[j] += 1;
-    
+
     return *this;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
 inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::operator-=(
     const std::pair<size_t,size_t> & coords
 ) {
-    
+
     size_t i = coords.first;
     size_t j = coords.second;
 
@@ -612,24 +612,24 @@ inline BArrayDense<Cell_Type,Data_Type> & BArrayDense<Cell_Type, Data_Type>::ope
     el[POS(i,j)]   = ZERO_CELL;
     el_rowsums[i] -= old;
     el_colsums[j] -= old;
-    
+
     return *this;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
-inline BArrayDenseCell<Cell_Type,Data_Type> BArrayDense<Cell_Type, Data_Type>::operator()(  
+inline BArrayDenseCell<Cell_Type,Data_Type> BArrayDense<Cell_Type, Data_Type>::operator()(
     size_t i,
     size_t j,
     bool check_bounds
 ) {
-    
+
     return BArrayDenseCell<Cell_Type,Data_Type>(this, i, j, check_bounds);
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
-inline const Cell_Type BArrayDense<Cell_Type, Data_Type>::operator()(  
+inline const Cell_Type BArrayDense<Cell_Type, Data_Type>::operator()(
     size_t i,
     size_t j,
     bool check_bounds
@@ -637,9 +637,9 @@ inline const Cell_Type BArrayDense<Cell_Type, Data_Type>::operator()(
 
     if (check_bounds)
         out_of_range(i, j);
-    
+
     return el[POS(i,j)];
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type>
@@ -649,18 +649,18 @@ inline void BArrayDense<Cell_Type, Data_Type>::rm_cell (
     bool check_bounds,
     bool check_exists
 ) {
-    
+
     // Checking the boundaries
     if (check_bounds)
         out_of_range(i,j);
 
     // BARRY_UNUSED(check_exists)
-        
+
     // Remove the pointer first (so it wont point to empty)
     el_rowsums[i] -= el[POS(i, j)];
-    el_colsums[j] -= el[POS(i, j)];    
+    el_colsums[j] -= el[POS(i, j)];
     el[POS(i, j)] = BARRY_ZERO_DENSE;
-    
+
     return;
 
 }
@@ -672,18 +672,18 @@ inline void BArrayDense<Cell_Type, Data_Type>::insert_cell (
     const Cell< Cell_Type> & v,
     bool check_bounds,
     bool
-) { 
-    
+) {
+
     if (check_bounds)
-        out_of_range(i,j); 
+        out_of_range(i,j);
 
     if (el[POS(i,j)] == BARRY_ZERO_DENSE)
     {
 
         el_rowsums[i] += v.value;
         el_colsums[j] += v.value;
-        
-    } 
+
+    }
     else
     {
 
@@ -697,7 +697,7 @@ inline void BArrayDense<Cell_Type, Data_Type>::insert_cell (
 
     return;
 
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: insert_cell(
@@ -707,17 +707,17 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     bool check_bounds,
     bool
 ) {
-    
+
     if (check_bounds)
         out_of_range(i,j);
-        
+
     if (el[POS(i,j)] == BARRY_ZERO_DENSE)
     {
 
         el_rowsums[i] += v;
         el_colsums[j] += v;
-        
-    } 
+
+    }
     else
     {
 
@@ -738,32 +738,32 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         int check_exists,
         int * report
 ) {
-    
+
     if (check_bounds) {
         out_of_range(i0,j0);
         out_of_range(i1,j1);
     }
-    
-        
+
+
     // Just in case, if this was passed
     if (report != nullptr)
         (*report) = EXISTS::BOTH;
-    
+
     // If source and target coincide, we do nothing
-    if ((i0 == i1) && (j0 == j1)) 
+    if ((i0 == i1) && (j0 == j1))
         return;
 
-    // Updating rowand col sumns    
+    // Updating rowand col sumns
     Cell_Type val0 = el[POS(i0,j0)];
     Cell_Type val1 = el[POS(i1,j1)];
 
     rm_cell(i0, j0, false, false);
     rm_cell(i1, j1, false, false);
-    
+
     // Inserting the cells by reference, these will be deleted afterwards
     insert_cell(i0, j0, val1, false, false);
     insert_cell(i1, j1, val0, false, false);
-    
+
     return;
 
 }
@@ -782,9 +782,9 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         insert_cell(i,j,1,false,false);
     else
         rm_cell(i,j,false,false);
-    
+
     return;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: swap_rows (
@@ -792,7 +792,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     size_t i1,
     bool check_bounds
 ) {
-  
+
     if (check_bounds)
     {
 
@@ -800,17 +800,17 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         out_of_range(i1,0u);
 
     }
-     
+
     // if (NCells == 0u)
     //     return;
-    
+
     // Swapping happens naturally, need to take care of the pointers
     // though
     for (size_t j = 0u; j < M; ++j)
         std::swap(el[POS(i0, j)], el[POS(i1, j)]);
 
     std::swap(el_rowsums[i0], el_rowsums[i1]);
-    
+
     return;
 }
 
@@ -828,7 +828,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         out_of_range(0u, j1);
 
     }
-    
+
     if ((el_colsums[j0] == ZERO_CELL) && el_colsums[j1] == ZERO_CELL)
         return;
 
@@ -838,7 +838,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         std::swap(el[POS(i, j0)], el[POS(i, j1)]);
 
     std::swap(el_colsums[j0], el_colsums[j1]);
-    
+
     return;
 }
 
@@ -846,7 +846,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     size_t i,
     bool check_bounds
     ) {
-  
+
     if (check_bounds)
         out_of_range(i, 0u);
 
@@ -854,34 +854,34 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
         return;
 
     // Else, remove all elements
-    for (size_t col = 0u; col < M; col++) 
+    for (size_t col = 0u; col < M; col++)
         rm_cell(i, col, false, false);
-    
+
     return;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: zero_col (
     size_t j,
     bool check_bounds
   ) {
-  
+
     if (check_bounds)
         out_of_range(0u, j);
-    
+
     if (el_colsums[j] == ZERO_CELL)
         return;
-    
+
     // Else, remove all elements
-    for (size_t row = 0u; row < N; row++) 
+    for (size_t row = 0u; row < N; row++)
         rm_cell(row, j, false, false);
-    
+
     return;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: transpose () {
-  
+
     // if (NCells == 0u)
     // {
 
@@ -890,20 +890,20 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
 
     // }
 
-    // Start by flipping the switch 
+    // Start by flipping the switch
     visited = !visited;
 
     // size_t N0 = N, M0 = M;
     std::vector< Cell< Cell_Type > > tmp_el(std::move(el));
     el.resize(N * M, ZERO_CELL);
-    for (size_t i = 0u; i < N; ++i) 
+    for (size_t i = 0u; i < N; ++i)
         for (size_t j = 0u; j < M; ++j)
             std::swap(tmp_el[POS(i, j)], el[POS_N(j, i, M)]);
-    
+
     // Swapping the values
     std::swap(N, M);
     std::swap(el_rowsums, el_colsums);
-    
+
     return;
 
 }
@@ -911,15 +911,15 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: clear (
     bool hard
 ) {
-    
+
     BARRY_UNUSED(hard)
-    
+
     std::fill(el.begin(), el.end(), ZERO_CELL);
     std::fill(el_rowsums.begin(), el_rowsums.end(), ZERO_CELL);
     std::fill(el_colsums.begin(), el_colsums.end(), ZERO_CELL);
-    
+
     return;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: resize (
@@ -953,7 +953,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
 
     N = N_;
     M = M_;
-    
+
     return;
 
 }
@@ -964,7 +964,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     el_rowsums.reserve(N);
     el_colsums.reserve(M);
     return;
-  
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Type, Data_Type>:: print (
@@ -972,7 +972,7 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
     ...
 ) const
 {
-  
+
     std::va_list args;
     va_start(args, fmt);
     printf_barry(fmt, args);
@@ -988,17 +988,17 @@ template<typename Cell_Type, typename Data_Type> inline void BArrayDense<Cell_Ty
 
             if (this->is_empty(i, j, false))
                 printf_barry("    . ");
-            else 
+            else
                 printf_barry(" %.2f ", static_cast<double>(this->get_cell(i, j, false)));
-            
+
         }
 
         printf_barry("\n");
 
     }
-    
+
     return;
-    
+
 }
 
 template<typename Cell_Type, typename Data_Type> inline const std::vector< Cell_Type > & BArrayDense<Cell_Type, Data_Type>:: get_data() const
@@ -1024,4 +1024,3 @@ template<typename Cell_Type, typename Data_Type> inline const Cell_Type BArrayDe
 #undef ZERO_CELL
 
 #endif
-

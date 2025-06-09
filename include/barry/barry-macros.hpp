@@ -11,7 +11,7 @@
 
 #if defined(_OPENMP) || defined(__OPENMP)
 #define BARRY_NCORES_ARG(default) size_t ncores default
-#else 
+#else
 #define BARRY_NCORES_ARG(default) size_t ncores default
 #endif
 

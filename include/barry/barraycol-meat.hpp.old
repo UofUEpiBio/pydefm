@@ -5,7 +5,7 @@
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayCol<Cell_Type,Data_Type>::operator=(const Cell_Type & val) {
-    
+
     if (Array->is_empty(i, j, false)) {
         Array->insert_cell(i, j, val, false, false);
     } else {
@@ -16,7 +16,7 @@ inline void BArrayCol<Cell_Type,Data_Type>::operator=(const Cell_Type & val) {
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayCol<Cell_Type,Data_Type>::operator+=(const Cell_Type & val) {
-    
+
     if (Array->is_empty(i, j, false)) {
         Array->insert_cell(i, j, val, false, false);
     } else {
@@ -27,7 +27,7 @@ inline void BArrayCol<Cell_Type,Data_Type>::operator+=(const Cell_Type & val) {
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayCol<Cell_Type,Data_Type>::operator-=(const Cell_Type & val) {
-    
+
     if (Array->is_empty(i, j, false)) {
         Array->insert_cell(i, j, -val, false, false);
     } else {
@@ -38,7 +38,7 @@ inline void BArrayCol<Cell_Type,Data_Type>::operator-=(const Cell_Type & val) {
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayCol<Cell_Type,Data_Type>::operator*=(const Cell_Type & val) {
-    
+
     if (!Array->is_empty(i, j, false)) {
         Array->el_ij.at(i).at(j).value *= val;
     }
@@ -47,7 +47,7 @@ inline void BArrayCol<Cell_Type,Data_Type>::operator*=(const Cell_Type & val) {
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayCol<Cell_Type,Data_Type>::operator/=(const Cell_Type & val) {
-    
+
     if (!Array->is_empty(i, j, false)) {
         Array->el_ij.at(i).at(j).value /= val;
     }
@@ -61,7 +61,7 @@ inline BArrayCol<Cell_Type,Data_Type>::operator Cell_Type() const {
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol<Cell_Type,Data_Type>::operator==(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) == static_cast<Cell_Type>(val);  
+    return Array->get_cell(i, j, false) == static_cast<Cell_Type>(val);
 }
 
 template<typename Cell_Type,typename Data_Type>
@@ -75,7 +75,7 @@ inline Col_type<Cell_Type>::iterator BArrayCol<Cell_Type,Data_Type>::end() noexc
 }
 
 /*******************************************************************************
- * Const Col 
+ * Const Col
  * ****************************************************************************/
 
 template<typename Cell_Type,typename Data_Type>
@@ -85,7 +85,7 @@ inline BArrayCol_const<Cell_Type,Data_Type>::operator Cell_Type() const {
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol_const<Cell_Type,Data_Type>::operator==(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) == static_cast<Cell_Type>(val);    
+    return Array->get_cell(i, j, false) == static_cast<Cell_Type>(val);
 }
 
 template<typename Cell_Type,typename Data_Type>
@@ -95,22 +95,22 @@ inline bool BArrayCol_const<Cell_Type,Data_Type>::operator!=(const Cell_Type & v
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol_const<Cell_Type,Data_Type>::operator<(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) < static_cast<Cell_Type>(val);    
+    return Array->get_cell(i, j, false) < static_cast<Cell_Type>(val);
 }
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol_const<Cell_Type,Data_Type>::operator>(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) > static_cast<Cell_Type>(val);    
+    return Array->get_cell(i, j, false) > static_cast<Cell_Type>(val);
 }
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol_const<Cell_Type,Data_Type>::operator<=(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) <= static_cast<Cell_Type>(val);    
+    return Array->get_cell(i, j, false) <= static_cast<Cell_Type>(val);
 }
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayCol_const<Cell_Type,Data_Type>::operator>=(const Cell_Type & val) const {
-    return Array->get_cell(i, j, false) >= static_cast<Cell_Type>(val);    
+    return Array->get_cell(i, j, false) >= static_cast<Cell_Type>(val);
 }
 
 #endif

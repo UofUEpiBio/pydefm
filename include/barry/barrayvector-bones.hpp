@@ -3,14 +3,14 @@
 
 /**
  * @brief Row or column of a `BArray`
- * 
- * @tparam Cell_Type 
- * @tparam Data_Type 
+ *
+ * @tparam Cell_Type
+ * @tparam Data_Type
  */
 template <typename Cell_Type = bool, typename Data_Type = bool>
 class BArrayVector {
 private:
-  
+
     BArray<Cell_Type,Data_Type> * Array;
     std::vector< std::pair< size_t, Cell_Type > > vec;
     size_t dim;
@@ -18,12 +18,12 @@ private:
 
     void init_vec();
     bool vec_initialized = false;
-  
+
 public:
-  
+
     /**
      * @brief Construct a new BArrayVector object
-     * 
+     *
      * @param Array_ Pointer to a `BArray` object
      * @param dim_ Dimension. 0 means row and 1 means column.
      * @param i_ Element to point.
@@ -34,7 +34,7 @@ public:
         size_t & dim_
         size_t & i_,
         bool check_bounds = true
-        ) : 
+        ) :
     Array(Array_), vec(0u), dim(dim_), i(i_) {
 
         if (dim > 1u)
@@ -66,13 +66,13 @@ public:
 
     operator std::vector< Cell_Type >() const;
     bool operator==(const Cell_Type & val) const;
-  
+
 };
 
 template <typename Cell_Type = bool, typename Data_Type = bool>
 class BArrayVector_const {
 private:
-    
+
     const BArray<Cell_Type,Data_Type> * Array;
     std::vector< std::pair< size_t, Cell_Type > > vec;
     size_t dim;
@@ -80,15 +80,15 @@ private:
 
     void init_vec();
     bool vec_initialized = false;
-    
+
 public:
-  
+
     BArrayVector_const(
         const BArray<Cell_Type,Data_Type> * Array_,
         size_t & dim_
         size_t & i_,
         bool check_bounds = true
-        ) : 
+        ) :
     Array(Array_), vec(0u), dim(dim_), i(i_) {
 
         if (dim > 1u)
@@ -104,7 +104,7 @@ public:
         }
 
     };
-    
+
     ~BArrayVector_const() {};
 
     bool is_row() const noexcept;
@@ -112,7 +112,7 @@ public:
     size_t size() const noexcept;
     std::vector< Cell_Type >::const_iterator begin() noexcept;
     std::vector< Cell_Type >::const_iterator end() noexcept;
-    
+
     operator std::vector<Cell_Type>() const;
     bool operator==(const Cell_Type & val) const;
     bool operator!=(const Cell_Type & val) const;
@@ -120,7 +120,7 @@ public:
     bool operator>(const Cell_Type & val) const;
     bool operator<=(const Cell_Type & val) const;
     bool operator>=(const Cell_Type & val) const;
-  
+
 };
 
 #endif

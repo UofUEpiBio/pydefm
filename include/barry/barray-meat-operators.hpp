@@ -35,7 +35,7 @@ BARRAY_TEMPLATE(BARRAY_TYPE()&, operator+=) (
 
     // Must be compatible
     checkdim_(*this, rhs);
-    
+
     for (size_t i = 0u; i < nrow(); ++i)
         for (size_t j = 0u; j < ncol(); ++j)
             this->operator()(i, j) += rhs.get_cell(i, j);
@@ -62,7 +62,7 @@ BARRAY_TEMPLATE(BARRAY_TYPE()&, operator-=) (
 
     // Must be compatible
     checkdim_(*this, rhs);
-    
+
     for (size_t i = 0u; i < nrow(); ++i) {
         for (size_t j = 0u; j < ncol(); ++j) {
             this->operator()(i, j) -= rhs.get_cell(i, j);

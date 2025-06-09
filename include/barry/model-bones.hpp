@@ -1,4 +1,4 @@
-#ifndef BARRY_MODEL_BONES_HPP 
+#ifndef BARRY_MODEL_BONES_HPP
 #define BARRY_MODEL_BONES_HPP 1
 
 /**
@@ -13,14 +13,14 @@
  *    \sum_{A'\in \mathcal{A}}\exp{\left(\theta^{\mbox{t}}c(A')\right)}
  *  }
  * \f]
- * 
+ *
  * This implementation aims to reduce the number of times that the support
  * needs to be computed. Models included here use more than a single array, and
  * thus allow the function to recycle support sets as needed. For example,
  * if we are looking at directed graphs all of the same size and without
  * vertex level features, i.e. a model that only counts edges, triangles, etc.
  * then the support needs to be fully computed only once.
- * 
+ *
  * @tparam Array_Type Class of `BArray` object.
  * @tparam Data_Counter_Type Any type.
  * @tparam Data_Rule_Type Any type.
@@ -43,12 +43,12 @@ protected:
     bool delete_rengine    = false;
 
     /**
-     * @name Information about the arrays used in the model 
+     * @name Information about the arrays used in the model
      * @details `stats_target` holds the observed sufficient statistics for each
      * array in the dataset. `array_frequency` contains the frequency with which
-     * each of the target stats_target (arrays) shows in the support. `array2support` 
+     * each of the target stats_target (arrays) shows in the support. `array2support`
      * maps array indices (0, 1, ...) to the corresponding support.
-     * 
+     *
      * Each vector of `stats_support` has the data stored in a row-wise order,
      * with each row starting with the weights, e.g., in a model with `k` terms
      * the first k + 1 elements of `stats_support` would be:
@@ -87,7 +87,7 @@ protected:
     std::vector< size_t > pset_sizes;     ///< Number of vectors included in the support.
     std::vector< size_t > pset_locations; ///< Accumulated number of vectors included in the support.
     ///@}
-    
+
     /**
       * @name Functions to compute statistics
       * @details Arguments are recycled to save memory and computation.
@@ -99,7 +99,7 @@ protected:
     Support<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type> support_fun;
     StatsCounter<Array_Type,Data_Counter_Type>                              counter_fun;
     ///@}
-    
+
     /**@brief Vector of the previously used parameters */
     std::vector< std::vector<double> > params_last;
     std::vector< std::vector<double> > params_last_pset;
@@ -112,16 +112,16 @@ protected:
 
     /**
      * @brief Transformation of the model
-     * 
+     *
      * @details When specified, this function will update the model by modifying
      * the linear equation. For example, if the user wanted to add interaction
      * terms, rescale, or apply other operations of the sorts, the user can do such
      * through this function.
-     * 
+     *
      * The function should return `void` and receive the following arguments:
      * - `data` Pointer to the first element of the set of sufficient statistics
      * - `k` size_t indicating the number of sufficient statistics
-     * 
+     *
      * @returns
      * Nothing, but it will modify the model data.
      */
@@ -129,7 +129,7 @@ protected:
         transform_model_fun = nullptr;
 
     std::vector< std::string > transform_model_term_names;
-    
+
 public:
 
     /**
@@ -154,7 +154,7 @@ public:
         BARRY_NCORES_ARG(=1),
         int i = -1
         );
-    
+
     void set_rengine(std::mt19937 * rengine_, bool delete_ = false) {
 
         if (delete_rengine)
@@ -162,7 +162,7 @@ public:
 
         rengine        = rengine_;
         delete_rengine = delete_;
-        
+
     };
 
     void set_seed(size_t s) {
@@ -177,7 +177,7 @@ public:
 
     };
     ///@}
-        
+
     Model();
     Model(size_t size_);
     Model(const Model<Array_Type,Data_Counter_Type,Data_Rule_Type,Data_Rule_Dyn_Type> & Model_);
@@ -198,12 +198,12 @@ public:
         if (delete_rengine)
             delete rengine;
     };
-    
+
     void store_psets() noexcept;
     std::vector< double > gen_key(const Array_Type & Array_);
-    
+
     /**
-     * @name Wrappers for the `Counters` member. 
+     * @name Wrappers for the `Counters` member.
      * @details These will add counters to the model, which are shared by the
      * support and the actual counter function.
      */
@@ -217,9 +217,9 @@ public:
     void set_counters(Counters<Array_Type,Data_Counter_Type> * counters_);
     void add_hasher(Hasher_fun_type<Array_Type,Data_Counter_Type> fun_);
     ///@}
-    
+
     /**
-     * @name Wrappers for the `Rules` member. 
+     * @name Wrappers for the `Rules` member.
      * @details These will add rules to the model, which are shared by the
      * support and the actual counter function.
      */
@@ -229,7 +229,7 @@ public:
         Rule_fun_type<Array_Type, Data_Rule_Type> count_fun_,
         Data_Rule_Type                            data_
     );
-    
+
     void set_rules(Rules<Array_Type,Data_Rule_Type> * rules_);
 
     void add_rule_dyn(Rule<Array_Type, Data_Rule_Dyn_Type> & rule);
@@ -237,10 +237,10 @@ public:
         Rule_fun_type<Array_Type, Data_Rule_Dyn_Type> count_fun_,
         Data_Rule_Dyn_Type                            data_
     );
-    
+
     void set_rules_dyn(Rules<Array_Type,Data_Rule_Dyn_Type> * rules_);
     ///@}
-    
+
 
     /**
      * @brief Adds an array to the support of not already included.
@@ -248,20 +248,20 @@ public:
      * @param force_new If `false`, it will use `keygen` to obtain a double vector
      * and create a hash of it. If the hash has been computed earlier, the support
      * is recycled.
-     * 
+     *
      * @return The number of the array.
      */
     size_t add_array(const Array_Type & Array_, bool force_new = false);
-    
-    
+
+
     /**
      * @name Likelihood functions.
      * @details Calculation of likelihood functions is done reusing normalizing
-     * constants. Before recalculating the normalizing constant, the function 
+     * constants. Before recalculating the normalizing constant, the function
      * checks whether `params` matches the last set vector of parameters used
      * to compute it.
-     * 
-     * 
+     *
+     *
      * @param params Vector of parameters
      * @param as_log When `true`, the function returns the log-likelihood.
      */
@@ -272,7 +272,7 @@ public:
         bool as_log = false,
         bool no_update_normconst = false
     );
-    
+
     double likelihood(
         const std::vector<double> & params,
         const Array_Type & Array_,
@@ -280,7 +280,7 @@ public:
         bool as_log = false,
         bool no_update_normconst = false
     );
-    
+
     double likelihood(
         const std::vector<double> & params,
         const std::vector<double> & target_,
@@ -296,7 +296,7 @@ public:
         bool as_log = false,
         bool no_update_normconst = false
     );
-    
+
     double likelihood_total(
         const std::vector<double> & params,
         bool as_log = false,
@@ -306,7 +306,7 @@ public:
     ///@}
 
     /**
-     * @name Extract elements by index 
+     * @name Extract elements by index
      * @param i Index relative to the array in the model.
      * @param params A new vector of model parameters to compute the normalizing
      * constant.
@@ -325,14 +325,14 @@ public:
         const size_t & i
     );
     ///@}
-    
+
     void print_stats(size_t i) const;
 
     /**
      * @brief Prints information about the model
      */
     virtual void print() const;
-    
+
     /**
      * @brief Sample a single array from the model
      * @param Array_ Baseline array to sample from.
@@ -343,14 +343,14 @@ public:
     Array_Type sample(const Array_Type & Array_, const std::vector<double> & params = {});
     Array_Type sample(const size_t & i, const std::vector<double> & params);
     ///@}
-    
+
     /**
      * @brief Conditional probability ("Gibbs sampler")
-     * 
+     *
      * @details Computes the conditional probability of observing
      * P{Y(i,j) = | Y^C, theta}, i.e., the probability of observing the entry Y(i,j) equal
      * to one given the rest of the array.
-     * 
+     *
      * @param Array_ Array to check
      * @param params Vector of parameters
      * @param i Row entry
@@ -363,14 +363,14 @@ public:
         size_t i,
         size_t j
     );
-    
+
     /**
      * @name Size of the model
-     * 
+     *
      * @brief Number of different supports included in the model
-     * 
+     *
      * This will return the size of `stats_target`.
-     * 
+     *
      * @return `size()` returns the number of arrays in the model.
      * @return `size_unique()` returns the number of unique arrays (according to
      * the hasher) in the model.
@@ -395,7 +395,7 @@ public:
 
     /**
      * @brief Raw pointers to the support and target statistics
-     * @details 
+     * @details
      * The support of the model is stored as a vector of vector<double>. Each
      * element of it contains the support for an specific type of array included.
      * It represents an array of size `(k + 1) x n unique elements`, with the data
@@ -411,7 +411,7 @@ public:
     std::vector< size_t > * get_arrays2support();
     std::vector< std::vector< Array_Type > > * get_pset_arrays();
     std::vector< double > * get_pset_stats();  ///< Statistics of the support(s)
-    std::vector< double > * get_pset_probs(); 
+    std::vector< double > * get_pset_probs();
     std::vector< size_t > * get_pset_sizes();
     std::vector< size_t > * get_pset_locations();
     ///@}
@@ -419,11 +419,11 @@ public:
     /**
      * @brief Set the transform_model_fun object
      * @details The transform_model function is used to transform the data
-     * 
-     * @param data 
-     * @param target 
-     * @param n_arrays 
-     * @param arrays2support 
+     *
+     * @param data
+     * @param target
+     * @param n_arrays
+     * @param arrays2support
      */
     ///@{
     void set_transform_model(

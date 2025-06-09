@@ -4,10 +4,10 @@
 
 /**
  * @brief Dense bi-dimensional array
- * 
+ *
  * @details elements is stored in a std::vector, in col-major order.
- * 
- * @tparam Cell_Type 
+ *
+ * @tparam Cell_Type
  */
 template<typename Cell_Type = bool, typename Data_Type = bool>
 class BArrayDense {
@@ -26,7 +26,7 @@ public:
     ~BArrayDense() {};
 
     void fill(const Cell_Type & d);
-    
+
     const std::vector< Cell_Type > & elements_raw() const noexcept;
     const std::vector< Cell_Type > * elements_ptr() const noexcept;
     size_t nrow() const noexcept;
@@ -63,7 +63,7 @@ inline BArrayDense<Cell_Type,Data_Type>::BArrayDense(
 
     elements.resize(elements_.size());
     std::copy(elements_.begin(), elements_.end(), elements.begin());
-    
+
 }
 
 template<typename Cell_Type,typename Data_Type>
@@ -79,7 +79,7 @@ inline const std::vector< Cell_Type > &
 {
     return elements;
 }
- 
+
 template<typename Cell_Type,typename Data_Type>
 inline const std::vector< Cell_Type > *
     BArrayDense<Cell_Type,Data_Type>::elements_ptr() const noexcept
@@ -102,7 +102,7 @@ inline size_t BArrayDense<Cell_Type,Data_Type>::ncol() const noexcept
 template<typename Cell_Type,typename Data_Type>
 inline Cell_Type BArrayDense<Cell_Type,Data_Type>::operator()(
     size_t i, size_t j, bool check_bounds
-) const 
+) const
 {
     if (check_bounds)
     {
@@ -119,8 +119,8 @@ inline Cell_Type BArrayDense<Cell_Type,Data_Type>::operator()(
 }
 
 template<typename Cell_Type,typename Data_Type>
-inline Cell_Type BArrayDense<Cell_Type,Data_Type>::operator[](size_t i) const 
-{           
+inline Cell_Type BArrayDense<Cell_Type,Data_Type>::operator[](size_t i) const
+{
     return elements[i];
 }
 

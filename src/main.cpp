@@ -14,12 +14,12 @@ namespace py = pybind11;
 
 
 std::shared_ptr< defm::DEFM > new_defm(
-    py::array_t< int > id, 
+    py::array_t< int > id,
     /*
     python uses row-major. defm uses col-major. Need to address this with:
     https://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html?highlight=mutable_data#arrays
     */
-    py::array_t< int > y, 
+    py::array_t< int > y,
     py::array_t< double > x,
     size_t order = 0u,
     bool copy = false,
@@ -84,7 +84,7 @@ py::array_t< int > simulate(
  * @param object The DEFM object
 */
 void print_y(const std::shared_ptr< defm::DEFM > & object) {
-    
+
     auto Y = object->get_Y();
     for (size_t i = 0u; i < object->get_n_y(); ++i)
         std::cout << (*(Y + i)) << " ";

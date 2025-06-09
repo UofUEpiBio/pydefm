@@ -17,7 +17,7 @@ STATSCOUNTER_TEMPLATE(,StatsCounter)(
     EmptyArray = *Array;
     EmptyArray.clear();
     current_stats = counter.current_stats;
-      
+
     // We will save the data here
     counters = new Counters<Array_Type,Data_Type>((*counter.counters));
     counter_deleted  = false;
@@ -33,56 +33,56 @@ STATSCOUNTER_TEMPLATE(,~StatsCounter)()
 
 STATSCOUNTER_TEMPLATE(void, reset_array)(const Array_Type * Array_)
 {
-    
+
     Array      = Array_;
     EmptyArray = *Array_;
     EmptyArray.clear();
-    
+
     return;
 }
 
 STATSCOUNTER_TEMPLATE(void, add_counter)(Counter<Array_Type,Data_Type> f_)
 {
-    
+
     counters->add_counter(f_);
-    
+
     return;
-    
+
 }
 
 STATSCOUNTER_TEMPLATE(void, set_counters)(Counters<Array_Type,Data_Type> * counters_)
 {
-    
+
     // Cleaning up before replacing the memory
     if (!counter_deleted)
         delete counters;
     counter_deleted = true;
     counters = counters_;
-    
+
     return;
-    
+
 }
 
 STATSCOUNTER_TEMPLATE(void, count_init)(size_t i,size_t j)
 {
-    
+
     // Do we have any counter?
     if (counters->size() == 0u)
         throw std::logic_error("No counters added: Cannot count without knowning what to count!");
-    
+
     // Iterating through the functions, and updating the set of
     // statistics.
     current_stats.resize(counters->size(), 0.0);
     // change_stats.resize(counters->size(), 0.0);
-    for (size_t n = 0u; n < counters->size(); ++n) 
+    for (size_t n = 0u; n < counters->size(); ++n)
         current_stats[n] = counters->operator[](n).init(EmptyArray, i, j);
-    
+
     return;
 }
 
 STATSCOUNTER_TEMPLATE(void, count_current)(size_t i, size_t j)
 {
-    
+
     // Iterating through the functions, and updating the set of
     // statistics.
     for (size_t n = 0u; n < counters->size(); ++n) {
@@ -92,7 +92,7 @@ STATSCOUNTER_TEMPLATE(void, count_current)(size_t i, size_t j)
     }
 
     return;
-    
+
 }
 
 template<typename Array_Type, typename Data_Type>
@@ -101,7 +101,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all()
 
     if (Array->is_dense())
     {
-        return count_all_dense(); 
+        return count_all_dense();
     }
     else
     {
@@ -113,10 +113,10 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all()
 template<typename Array_Type, typename Data_Type>
 inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_sparse()
 {
-    
+
     // Initializing the counter on the empty array
     count_init(0u, 0u);
-    
+
     // Setting it to zero.
     EmptyArray.clear(false);
 
@@ -126,17 +126,17 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_spars
             BARRY_DEBUG_VEC_PRINT<std::string>(this->get_names());
         #endif
     #endif
-    
+
     // Start iterating through the data
     for (size_t i = 0; i < Array->nrow(); ++i)
     {
-        
+
         const auto & row = Array->row(i, false);
 
         // Any element?
         if (row.size() == 0u)
             continue;
-        
+
         // If there's one, then update the statistic, by iterating
         for (const auto& col: row)
         {
@@ -144,7 +144,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_spars
             // We only insert if it is different from zero
             if (static_cast<int>(col.second.value) == 0)
                 continue;
-            
+
             // Adding a cell
             EmptyArray.insert_cell(i, col.first, col.second, false, false);
 
@@ -161,7 +161,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_spars
                         EmptyArray.print();
                     #endif
                 #endif
-            #endif 
+            #endif
 
             // Computing the change statistics
             count_current(i, col.first);
@@ -171,23 +171,23 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_spars
                     BARRY_DEBUG_VEC_PRINT(current_stats);
                 #endif
             #endif
-          
-        } 
-        
+
+        }
+
     }
-    
+
     // Adding to the sufficient statistics
     return current_stats;
-    
+
 }
 
 template<typename Array_Type, typename Data_Type>
 inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_dense()
 {
-    
+
     // Initializing the counter on the empty array
     count_init(0u, 0u);
-    
+
     // Setting it to zero.
     EmptyArray.clear(false);
 
@@ -197,7 +197,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_dense
             BARRY_DEBUG_VEC_PRINT<std::string>(this->get_names());
         #endif
     #endif
-    
+
     // Start iterating through the data
     for (size_t i = 0u; i < Array->nrow(); ++i)
     {
@@ -207,7 +207,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_dense
             // We only insert if it is different from zero
             if (Array->is_empty(i,j))
                 continue;
-            
+
             // Adding a cell
             EmptyArray.insert_cell(i, j, 1, false, false);
 
@@ -224,7 +224,7 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_dense
                         EmptyArray.print();
                     #endif
                 #endif
-            #endif 
+            #endif
 
             // Computing the change statistics
             count_current(i, j);
@@ -235,12 +235,12 @@ inline std::vector< double > StatsCounter<Array_Type,Data_Type>::count_all_dense
                 #endif
             #endif
         }
-        
+
     }
-    
+
     // Adding to the sufficient statistics
     return current_stats;
-    
+
 }
 
 template STATSCOUNTER_TEMPLATE_ARGS()

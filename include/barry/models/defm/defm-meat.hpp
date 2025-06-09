@@ -5,7 +5,7 @@ inline std::vector< double > keygen_defm(
     const DEFMArray & Array_,
     DEFMCounterData * data
     ) {
-    
+
     size_t nrow = Array_.nrow();
     size_t ncol = Array_.ncol();
 
@@ -41,7 +41,7 @@ inline void DEFM::simulate(
     int * y_out
 ) {
 
-    size_t model_num = 0u; 
+    size_t model_num = 0u;
     size_t n_entry = M_order * Y_ncol;
     auto idx = this->get_arrays2support();
     DEFMArray last_array;
@@ -50,7 +50,7 @@ inline void DEFM::simulate(
 
         // Figuring out how many processes can we observe
         DEFM_RANGES(i)
-        
+
         DEFM_LOOP_ARRAYS(proc_n)
         {
 
@@ -96,7 +96,7 @@ inline void DEFM::simulate(
             }
 
 
-            
+
         }
 
         n_entry += M_order * Y_ncol;
@@ -196,7 +196,7 @@ inline DEFM::DEFM(
             start_end.push_back(row);
 
         }
-        
+
     }
 
     start_end.push_back(id_length - 1u);
@@ -210,12 +210,12 @@ inline DEFM::DEFM(
     for (auto i = 0u; i < X_ncol; ++i)
         X_names.emplace_back(std::string("X") + std::to_string(i));
 
-    return;    
+    return;
 
 }
 
 
-inline void DEFM::init() 
+inline void DEFM::init()
 {
 
     // Adding the rule
@@ -341,7 +341,7 @@ inline barry::FreqTable<int> DEFM::motif_census(
 
         // Figuring out how many processes can we observe
         DEFM_RANGES(i)
-        
+
         DEFM_LOOP_ARRAYS(proc_n)
         {
 
@@ -367,7 +367,7 @@ inline std::vector< double > DEFM::logodds(
     size_t i_,
     size_t j_
 ) {
-    
+
 
     std::vector< double > res(ID_length, std::nan(""));
 
@@ -376,7 +376,7 @@ inline std::vector< double > DEFM::logodds(
 
         // Figuring out how many processes can we observe
         DEFM_RANGES(i)
-        
+
         DEFM_LOOP_ARRAYS(n_proc)
         {
 

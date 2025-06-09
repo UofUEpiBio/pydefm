@@ -37,7 +37,7 @@ BDENSE_TEMPLATE(BDENSE_TYPE()&, operator+=) (
 
     // Must be compatible
     checkdim_(*this, rhs);
-    
+
     for (size_t i = 0u; i < nrow(); ++i)
         for (size_t j = 0u; j < ncol(); ++j)
             this->operator()(i, j) += rhs.get_cell(i, j);
@@ -64,7 +64,7 @@ BDENSE_TEMPLATE(BDENSE_TYPE()&, operator-=) (
 
     // Must be compatible
     checkdim_(*this, rhs);
-    
+
     for (size_t i = 0u; i < nrow(); ++i) {
         for (size_t j = 0u; j < ncol(); ++j) {
             this->operator()(i, j) -= rhs.get_cell(i, j);
@@ -78,11 +78,11 @@ BDENSE_TEMPLATE(BDENSE_TYPE()&, operator-=) (
     const Cell_Type& rhs
 ) {
 
-    for (size_t i = 0u; i < nrow(); ++i) 
-        for (size_t j = 0u; j < ncol(); ++j) 
+    for (size_t i = 0u; i < nrow(); ++i)
+        for (size_t j = 0u; j < ncol(); ++j)
             this->operator()(i, j) -= rhs;
-        
-    
+
+
 
     return *this;
 }
@@ -91,7 +91,7 @@ BDENSE_TEMPLATE(BDENSE_TYPE()&, operator*=) (
     const Cell_Type& rhs
 ) {
 
-    for (size_t i = 0u; i < nrow(); ++i) 
+    for (size_t i = 0u; i < nrow(); ++i)
         for (size_t j = 0u; j < nrow(); ++j)
             el[POS(i, j)] *= rhs;
 
@@ -102,7 +102,7 @@ BDENSE_TEMPLATE(BDENSE_TYPE()&, operator/=) (
     const Cell_Type& rhs
 ) {
 
-    for (size_t i = 0u; i < nrow(); ++i) 
+    for (size_t i = 0u; i < nrow(); ++i)
         for (size_t j = 0u; j < nrow(); ++j)
             el[POS(i, j)] /= rhs;
 

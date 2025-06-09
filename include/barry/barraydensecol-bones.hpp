@@ -1,4 +1,4 @@
-#ifndef BARRY_BARRAYDENSECOL_BONES 
+#ifndef BARRY_BARRAYDENSECOL_BONES
 #define BARRY_BARRAYDENSECOL_BONES
 
 #define POS(a,b) (b)*N + (a)
@@ -23,14 +23,14 @@ private:
 
             for (size_t i = 0u; i < array->N; ++i)
             {
-                
+
                 if (array->el[POS_N(i, index, array->N)] != ZERO_CELL)
                     col[i] = col[POS_N(i, index, array->N)];
-                    
+
             }
 
             col_filled = true;
-            
+
         }
     }
 
@@ -85,10 +85,10 @@ public:
 
         for (size_t i = 0u; i < array->N; ++i)
         {
-            
+
             if (array->el[POS_N(i, index, array->N)] != ZERO_CELL)
                 col[i] = col[POS_N(i, index, array->N)];
-                
+
         }
 
     };

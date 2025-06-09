@@ -8,27 +8,27 @@
  * */
 /**
  * @brief Data definition for the `PhyloArray` class.
- * 
+ *
  * This holds basic information about a given node.
- * 
+ *
  */
 class NodeData {
 public:
-  
+
     /**
      * Branch length.
      */
     std::vector< double > blengths = {};
-    
+
     /**
      * State of the parent node.
      */
     std::vector< bool > states = {};
-    
+
     bool duplication = true; ///< Whether the node is a duplication.
     bool has_leaf = false;   ///< Whether the node has a leaf as offspring.
-    
-    
+
+
     NodeData(
         const std::vector< double > & blengths_,
         const std::vector< bool > & states_,
@@ -36,9 +36,9 @@ public:
         bool has_leaf_ = false
     ) : blengths(blengths_), states(states_), duplication(duplication_),
         has_leaf(has_leaf_) {};
-    
+
     // ~NodeData() {};
-  
+
 };
 
 class PhyloCounterData {
@@ -91,9 +91,9 @@ public:
     {
         return (*counts)[pos];
     }
-    
+
     ~PhyloRuleDynData() {};
-    
+
 };
 
 
@@ -116,7 +116,7 @@ typedef barry::Model<PhyloArray, PhyloCounterData, PhyloRuleData, PhyloRuleDynDa
 typedef barry::PowerSet<PhyloArray, PhyloRuleData> PhyloPowerSet;
 ///@}
 
-// template<> 
+// template<>
 // inline void PhyloArray::insert_cell(
 //     size_t i,
 //     size_t j,
@@ -126,7 +126,7 @@ typedef barry::PowerSet<PhyloArray, PhyloRuleData> PhyloPowerSet;
 // ) {
 
 //     if (check_bounds)
-//         out_of_range(i,j); 
+//         out_of_range(i,j);
 
 //     auto & elptr = el[POS(i,j)];
 
@@ -135,8 +135,8 @@ typedef barry::PowerSet<PhyloArray, PhyloRuleData> PhyloPowerSet;
 
 //         el_rowsums[i] += v.value;
 //         el_colsums[j] += v.value;
-        
-//     } 
+
+//     }
 //     else
 //     {
 

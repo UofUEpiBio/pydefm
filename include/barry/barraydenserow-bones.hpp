@@ -23,14 +23,14 @@ private:
 
             for (size_t j = 0u; j < array->M; ++j)
             {
-                
+
                 if (array->el[POS_N(index, j, array->N)] != ZERO_CELL)
                     row[j] = row[POS_N(index, j, array->N)];
-                    
+
             }
 
             row_filled = true;
-            
+
         }
     }
 
@@ -94,10 +94,10 @@ public:
 
         for (size_t j = 0u; j < array->M; ++j)
         {
-            
+
             if (array->el[POS_N(index, j, array->M)] != ZERO_CELL)
                 row[j] = row[POS_N(index, j, array->M)];
-                
+
         }
 
         return;

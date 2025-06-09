@@ -4,18 +4,18 @@
 /**
   * @name Configuration MACROS
   * @details These are mostly related to performance. The definitions follow:
-  * 
+  *
   * - `BARRY_USE_UNORDERED_MAP` If specified, then barry is compiled using
   *   `std::unordered_map`. Otherwise it will use `std::map` for the arrays.
-  * 
+  *
   * - `BARRY_USE_SAFE_EXP` When specified, it will multiply all likelihoods
   *   in `Model` by (1/-100)/(1/-100) so that numerical overflows are avoided.
-  * 
-  * - `BARRY_USE_ISFINITE` When specified, it will introduce a macro that 
+  *
+  * - `BARRY_USE_ISFINITE` When specified, it will introduce a macro that
   *   checks whether the likelihood is finite or not.
-  * 
+  *
   * - `printf_barry` If not specified, will be defined as `printf`.
-  * 
+  *
   * - `BARRY_DEBUG_LEVEL`, when defined, will make things verbose.
   */
 ///@{
@@ -28,7 +28,7 @@
 #endif
 
 #ifdef BARRY_USE_SAFE_EXP
-    #define BARRY_SAFE_EXP 
+    #define BARRY_SAFE_EXP
 #else
     #define BARRY_SAFE_EXP -100.0
 #endif
@@ -37,7 +37,7 @@
     #define BARRY_ISFINITE(a) if (!std::isfinite( (a) )) \
         throw std::overflow_error("The likelihood function has overflowed.");
 #else
-    #define BARRY_ISFINITE(a) 
+    #define BARRY_ISFINITE(a)
 #endif
 
 #ifdef BARRAY_USE_CHECK_SUPPORT

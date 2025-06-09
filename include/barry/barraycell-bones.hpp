@@ -6,14 +6,14 @@
 template <typename Cell_Type = bool, typename Data_Type = bool>
 class BArrayCell {
 private:
-  
+
     BArray<Cell_Type,Data_Type> * Array;
     size_t i;
     size_t j;
-  
+
 public:
-  
-    BArrayCell(BArray<Cell_Type,Data_Type> * Array_, size_t i_, size_t j_, bool check_bounds = true) : 
+
+    BArrayCell(BArray<Cell_Type,Data_Type> * Array_, size_t i_, size_t j_, bool check_bounds = true) :
     Array(Array_), i(i_), j(j_) {
 
         if (check_bounds)
@@ -37,7 +37,7 @@ public:
 
     operator Cell_Type() const;
     bool operator==(const Cell_Type & val) const;
-  
+
 };
 
 
@@ -45,14 +45,14 @@ public:
 template <typename Cell_Type = bool, typename Data_Type = bool>
 class BArrayCell_const {
 private:
-    
+
     const BArray<Cell_Type,Data_Type> * Array;
     size_t i;
     size_t j;
-    
+
 public:
-  
-    BArrayCell_const(const BArray<Cell_Type,Data_Type> * Array_, size_t i_, size_t j_, bool check_bounds = true) : 
+
+    BArrayCell_const(const BArray<Cell_Type,Data_Type> * Array_, size_t i_, size_t j_, bool check_bounds = true) :
     Array(Array_), i(i_), j(j_) {
         if (check_bounds) {
 
@@ -63,9 +63,9 @@ public:
 
         }
     };
-    
+
     ~BArrayCell_const(){};
-    
+
     operator Cell_Type() const;
     bool operator==(const Cell_Type & val) const;
     bool operator!=(const Cell_Type & val) const;
@@ -73,7 +73,7 @@ public:
     bool operator>(const Cell_Type & val) const;
     bool operator<=(const Cell_Type & val) const;
     bool operator>=(const Cell_Type & val) const;
-  
+
 };
 
 #endif

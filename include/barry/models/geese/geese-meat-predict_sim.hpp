@@ -44,7 +44,7 @@ inline std::vector< std::vector<double> > Geese::predict_sim(
                 if (n.id == id)
                     continue;
 
-                const auto & ord     = nodes[id].ord; 
+                const auto & ord     = nodes[id].ord;
                 const auto & n_w_ann = nodes[id].annotations;
                 for (size_t f = 0u; f < nfuns(); ++f)
                 {
@@ -94,7 +94,7 @@ inline std::vector< std::vector<double> > Geese::predict_sim(
         for (size_t f = 0u; f < nfuns(); ++f)
             res_vec[i][f] /= (static_cast< double >(counts[i]) + 1e-10);
     }
-    
+
     return res_vec;
 
 }

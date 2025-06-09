@@ -9,7 +9,7 @@ class Geese;
  * @details This object buils a model with multiple trees (Geese objects),
  * with all of these using the same PhyloModel object. Available counters
  * (terms) can be found in \ref counter-phylo.
- * 
+ *
  */
 class Flock {
 public:
@@ -17,7 +17,7 @@ public:
     std::vector< Geese > dat;
     size_t nfunctions  = 0u;
     bool initialized = false;
-    
+
     // Common components
     std::mt19937 rengine;
     PhyloModel model = PhyloModel();
@@ -27,7 +27,7 @@ public:
 
     /**
      * @brief Add a tree to the flock
-     * 
+     *
      * @param annotations see Geese::Geese.
      * @param geneid see Geese.
      * @param parent see Geese.
@@ -43,13 +43,13 @@ public:
 
     /**
      * @brief Set the seed of the model
-     * 
+     *
      * @param s Passed to the `rengine.seed()` member object.
      */
     void set_seed(const size_t & s);
 
     void init(size_t bar_width = BARRY_PROGRESS_BAR_WIDTH);
-    
+
     // void add_geese(Geese x);
     PhyloCounters * get_counters();
     PhyloSupport *  get_support_fun();
@@ -59,12 +59,12 @@ public:
 
     /**
      * @brief Returns the joint likelihood of the model
-     * 
+     *
      * @param par Vector of model parameters.
      * @param as_log When `true` it will return the value as log.
      * @param use_reduced_sequence When `true` (default) will compute the
      * likelihood using the reduced sequence, which is faster.
-     * @return double 
+     * @return double
      */
     double likelihood_joint(
         const std::vector< double > & par,
@@ -74,7 +74,7 @@ public:
     );
 
     /**
-     * @name Information about the model 
+     * @name Information about the model
      */
     ///@{
     size_t nfuns() const noexcept;
@@ -93,7 +93,7 @@ public:
 
     /**
      * @brief Access the i-th geese element
-     * 
+     *
      * @param i Element to access
      * @param check_bounds When true, it will check bounds.
      * @return Geese*

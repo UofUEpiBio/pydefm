@@ -26,7 +26,7 @@
 #endif
 
 #ifndef BARRY_HPP
-#define BARRY_HPP 
+#define BARRY_HPP
 
 #define BARRY_VERSION_MAYOR 0
 #define BARRY_VERSION_MINOR 1
@@ -36,7 +36,7 @@
   * @brief barry: Your go-to motif accountant
   */
 namespace barry {
-    
+
     //! Tree class and TreeIterator class
     #include "typedefs.hpp"
     #include "barry-macros.hpp"
@@ -60,7 +60,7 @@ namespace barry {
     #include "barraydense-meat.hpp"
     #include "barraydensecell-meat.hpp"
     #include "barraydense-meat-operators.hpp"
-    
+
     #include "counters-bones.hpp"
     #include "counters-meat.hpp"
 
@@ -75,16 +75,16 @@ namespace barry {
 
     #include "model-bones.hpp"
     #include "model-meat.hpp"
-    
+
     #include "rules-bones.hpp"
     #include "rules-meat.hpp"
-    
+
     namespace counters {
         namespace network {
             #include "counters/network.hpp"
         }
     }
-    
+
 }
 
 namespace netcounters = barry::counters::network;

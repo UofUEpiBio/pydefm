@@ -26,16 +26,16 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
 
         for (size_t f = 0u; f < nfuns(); ++f)
             rootp[s] *= states[s][f] ? par_root[f] : (1.0 - par_root[f]);
-        
+
     }
 
-    // Making room 
+    // Making room
     std::vector< std::vector<double> > res(
         nnodes(), std::vector<double>(nfuns())
         );
 
     // Step 1: Computing the probability at the root node
-    std::vector< double > tmp_prob(nfuns(), 0.0); 
+    std::vector< double > tmp_prob(nfuns(), 0.0);
     size_t root_id = preorder[0u];
     Node * tmp_node = &nodes[root_id];
     tmp_node->probability.resize(states.size(), 0.0);
@@ -57,7 +57,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
         {
             throw std::runtime_error("Probability is not finite");
         }
-            
+
         // Marginalizing the probabilities P(x_sf | D)
         for (size_t f = 0u; f < nfuns(); ++f)
         {
@@ -74,7 +74,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
 
     // Storing the final prob
     res[nodes[root_id].ord] = tmp_prob;
-    
+
     // Retrieving the powersets probabilities
     const auto & pset_probs     = *(model->get_pset_probs());
     const auto & arrays2support = *(model->get_arrays2support());
@@ -95,7 +95,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
 
         everything_below.reserve(states.size());
         everything_above.reserve(states.size());
-        
+
         // All combinations of the the parent states
         // So psets[s] = combinations of offspring given state s.
         //    psets[s][i] = The ith combination of offspring given state s.
@@ -133,7 +133,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                 // Adding to the map, we only do this during the first run,
                 // afterwards, we need to actually look for the array.
                 bool in_the_set = true; /// < True if the array belongs to the set
-                
+
                 // Everything below just need to be computed only once
                 // and thus, if already added, no need to go through all of this!
                 double everything_below_p = 1.0;
@@ -155,7 +155,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                                 in_the_set = false;
                                 break;
                             }
-                                
+
                         }
 
                         if (!in_the_set)
@@ -181,7 +181,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                     continue;
 
                 pset.push_back(array_p); // Generating a copy
-                
+
                 // - With focal node, conditioning on it beening status s.
                 // - But the offspring probabilities are the central ones here.
                 // - So the saved values are for computing P(x_offspring | Data)
@@ -204,7 +204,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
             everything_below.push_back(std::move(below));
             everything_above.push_back(std::move(above));
 
-            
+
         } // end for states
 
         // Marginalizing at the state level for each offspring
@@ -234,7 +234,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                         if (cvec[f] == 1u)
                             res[parent.offspring[off]->ord][f] += everything_above[s][p];
                     }
-                    
+
 
 
                 }
@@ -242,7 +242,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
             }
         }
 
-        // Finally, we can marginalize the values at the 
+        // Finally, we can marginalize the values at the
         // gene function level.
         for (const auto & off : parent.offspring)
         {
@@ -258,8 +258,8 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
                         std::to_string(res[off->ord][f]);
 
                     throw std::logic_error(msg);
-                    
-                } 
+
+                }
 
                 if (res[off->ord][f] > 1.0)
                     res[off->ord][f] = 1.0;
@@ -271,7 +271,7 @@ inline std::vector< std::vector<double> > Geese::predict_backend(
         }
 
     } // end for over preorder
-        
+
     return res;
 
 }
@@ -316,7 +316,7 @@ inline std::vector< std::vector<double> > Geese::predict(
     }
 
     // In this case, we need to update the predictions, mostly of the annotated
-    // leaf nodes. Because of 
+    // leaf nodes. Because of
     if (leave_one_out)
     {
 
@@ -339,7 +339,7 @@ inline std::vector< std::vector<double> > Geese::predict(
                         break;
 
                     }
-                
+
 
                 if (!use_it)
                     continue;
@@ -366,7 +366,7 @@ inline std::vector< std::vector<double> > Geese::predict(
         }
 
     }
-    
+
     return res;
 
 }

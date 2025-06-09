@@ -17,7 +17,7 @@ private:
     std::shared_ptr<std::vector< int >> Y_shared;    ///< Outcome variable
     std::shared_ptr<std::vector< int >> ID_shared;   ///< Individual ids
     std::shared_ptr<std::vector< double >> X_shared; ///< Covariates
-    
+
     size_t N;         ///< Number of agents/individuals
     size_t ID_length; ///< Length of the vector IDs
     size_t Y_ncol;    ///< Number of columns in the response
@@ -91,4 +91,3 @@ public:
 };
 
 #endif
-

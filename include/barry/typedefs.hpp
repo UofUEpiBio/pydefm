@@ -39,7 +39,7 @@ namespace EXISTS {
     const int NONE = 0;
     const int ONE  = 1;
     const int TWO  = 1;
-    
+
     const int UKNOWN  = -1;
     const int AS_ZERO = 0;
     const int AS_ONE  = 1;
@@ -71,7 +71,7 @@ using Col_type = Map< size_t, Cell<Cell_Type>* >;
 
 /**
   * @brief A wrapper class to store `source`, `target`, `val` from a `BArray` object.
-  * 
+  *
   * @tparam Cell_Type Any type
   */
 template<typename Cell_Type>
@@ -80,7 +80,7 @@ public:
     std::vector< size_t > source;
     std::vector< size_t > target;
     std::vector< Cell_Type > val;
-    
+
     Entries() : source(0u), target(0u), val(0u) {};
     Entries(size_t n) {
         source.reserve(n);
@@ -88,16 +88,16 @@ public:
         val.reserve(n);
         return;
     };
-    
+
     ~Entries() {};
-    
+
     void resize(size_t n) {
         source.resize(n);
         target.resize(n);
         val.resize(n);
         return;
     }
-    
+
 };
 
 // Relevant for anything using vecHasher function ------------------------------
@@ -107,35 +107,35 @@ struct vecHasher
 
     std::size_t operator()(std::vector< T > const&  dat) const noexcept
     {
-        
+
         std::hash< T > hasher;
         std::size_t hash = hasher(dat[0u]);
-        
+
         // ^ makes bitwise XOR
         // 0x9e3779b9 is a 32 bit constant (comes from the golden ratio)
         // << is a shift operator, something like lhs * 2^(rhs)
         if (dat.size() > 1u)
             for (size_t i = 1u; i < dat.size(); ++i)
                 hash ^= hasher(dat[i]) + 0x9e3779b9 + (hash<<6) + (hash>>2);
-        
+
         return hash;
-        
+
     }
 
 };
 
-template<typename Ta = double, typename Tb = size_t> 
+template<typename Ta = double, typename Tb = size_t>
 using MapVec_type = std::unordered_map< std::vector< Ta >, Tb, vecHasher<Ta>>;
 
 /**
  * @brief Ascending sorting an array
- * 
+ *
  * It will sort an array solving ties using the next column. Data is
  * stored column-wise.
- * 
- * @tparam T 
- * @param v 
- * @param nrows 
+ *
+ * @tparam T
+ * @param v
+ * @param nrows
  * @return std::vector<size_t> The sorting index.
  */
 inline std::vector< size_t > sort_array(
@@ -155,8 +155,8 @@ inline std::vector< size_t > sort_array(
             for (size_t j = 0u; j < ncols; ++j)
             {
                 if (*(v + (nrows * j + i1+start)) == *(v + (nrows * j + i2 + start)))
-                    continue;   
-                else 
+                    continue;
+                else
                     return *(v + (nrows * j + i1+start)) < *(v + (nrows * j + i2 + start));
             }
 
@@ -165,7 +165,7 @@ inline std::vector< size_t > sort_array(
 
     return idx;
 
-}   
+}
 
 
 // Mostly relevant in the case of the stats count functions -------------------
@@ -193,8 +193,8 @@ using Rule_fun_type = std::function<bool(const Array_Type &, size_t, size_t, Dat
 /**
  * @brief Hasher function used by the counter
  * @details Used to characterize the support of the array.
- * 
- * @tparam Array_Type 
+ *
+ * @tparam Array_Type
  */
 template <typename Array_Type, typename Data_Type>
 using Hasher_fun_type = std::function<std::vector<double>(const Array_Type &, Data_Type *)>;
@@ -211,23 +211,23 @@ inline bool vec_equal(
     const std::vector< T > & a,
     const std::vector< T > & b
 ) {
-    
+
     if (a.size() != b.size())
     {
-        
+
         std::string err = "-a- and -b- should have the same length. length(a) = " +
             std::to_string(a.size()) + " and length(b) = " + std::to_string(b.size()) +
             std::string(".");
         throw std::length_error(err);
 
     }
-    
+
     size_t i = 0;
     while (a[i] == b[i]) {
         if (++i == a.size())
             return true;
     }
-    
+
     return false;
 }
 
@@ -237,7 +237,7 @@ inline bool vec_equal_approx(
     const std::vector< T > & b,
     double eps = 1e-100
 ) {
-    
+
     if (a.size() != b.size())
     {
         std::string err = "-a- and -b- should have the same length. length(a) = " +
@@ -245,13 +245,13 @@ inline bool vec_equal_approx(
             std::string(".");
         throw std::length_error(err);
     }
-    
+
     size_t i = 0;
     while (static_cast<double>(std::fabs(a[i] - b[i])) < eps) {
         if (++i == a.size())
             return true;
     }
-    
+
     return false;
 }
 ///@}
@@ -265,16 +265,16 @@ inline T vec_inner_prod(
     const T * b,
     size_t n
 ) {
-    
+
     double res = 0.0;
-    #if defined(__OPENMP) || defined(_OPENMP) 
+    #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp simd reduction(+:res)
     #elif defined(__GNUC__) && !defined(__clang__)
         #pragma GCC ivdep
     #endif
     for (size_t i = 0u; i < n; ++i)
         res += (*(a + i) * *(b + i));
-    
+
     return res;
 
 }
@@ -288,7 +288,7 @@ inline double vec_inner_prod(
     const double * b,
     size_t n
 ) {
-    
+
     double res = 0.0;
     #if defined(__OPENMP) || defined(_OPENMP)
     #pragma omp simd reduction(+:res)
@@ -297,10 +297,9 @@ inline double vec_inner_prod(
     #endif
     for (size_t i = 0u; i < n; ++i)
         res += (*(a + i) * *(b + i));
-    
+
     return res;
 
 }
 
 #endif
-

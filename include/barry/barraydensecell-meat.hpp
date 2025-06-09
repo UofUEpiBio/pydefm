@@ -3,13 +3,13 @@
 #ifndef BARRY_BARRAYDENSECELL_MEAT_HPP
 #define BARRY_BARRAYDENSECELL_MEAT_HPP 1
 
-#define POS(a, b) (a) + (b) * dat->N 
+#define POS(a, b) (a) + (b) * dat->N
 
 template<typename Cell_Type,typename Data_Type>
 inline BArrayDenseCell<Cell_Type,Data_Type>& BArrayDenseCell<Cell_Type,Data_Type>::operator=(
     const BArrayDenseCell<Cell_Type,Data_Type> & other
     ) {
-    
+
     Cell_Type val = static_cast<Cell_Type>(other);
     #ifdef BARRY_DEBUG
     Cell_Type old      =  dat->el.at(POS(i,j));
@@ -41,12 +41,12 @@ inline void BArrayDenseCell<Cell_Type,Data_Type>::operator=(const Cell_Type & va
     dat->el_rowsums[i] += (val - old);
     dat->el_colsums[j] += (val - old);
     #endif
-    
+
 }
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayDenseCell<Cell_Type,Data_Type>::operator+=(const Cell_Type & val) {
-    
+
     #ifdef BARRY_DEBUG
     dat->el.at(POS(i,j))  += val;
     dat->el_rowsums.at(i) += val;
@@ -61,7 +61,7 @@ inline void BArrayDenseCell<Cell_Type,Data_Type>::operator+=(const Cell_Type & v
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayDenseCell<Cell_Type,Data_Type>::operator-=(const Cell_Type & val) {
-    
+
     #ifdef BARRY_DEBUG
     dat->el.at(POS(i,j))  -= val;
     dat->el_rowsums.at(i) -= val;
@@ -76,7 +76,7 @@ inline void BArrayDenseCell<Cell_Type,Data_Type>::operator-=(const Cell_Type & v
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayDenseCell<Cell_Type,Data_Type>::operator*=(const Cell_Type & val) {
-    
+
     #ifdef BARRY_DEBUG
     Cell_Type old = dat->el.at(POS(i,j));
     dat->el_colsums.at(j) += (old * val - old);
@@ -93,7 +93,7 @@ inline void BArrayDenseCell<Cell_Type,Data_Type>::operator*=(const Cell_Type & v
 
 template<typename Cell_Type,typename Data_Type>
 inline void BArrayDenseCell<Cell_Type,Data_Type>::operator/=(const Cell_Type & val) {
-    
+
     #ifdef BARRY_DEBUG
     Cell_Type old = dat->el.at(POS(i,j));
     dat->el_rowsums.at(i) += (old/val - old);
@@ -115,7 +115,7 @@ inline BArrayDenseCell<Cell_Type,Data_Type>::operator Cell_Type() const {
 
 template<typename Cell_Type,typename Data_Type>
 inline bool BArrayDenseCell<Cell_Type,Data_Type>::operator==(const Cell_Type & val) const {
-    return dat->el[POS(i,j)] == val;  
+    return dat->el[POS(i,j)] == val;
 }
 
 #undef POS
